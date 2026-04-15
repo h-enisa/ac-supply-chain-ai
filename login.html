@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>American Computers Albania — Login</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --ac-blue: #185FA5; --ac-blue-dk: #0C447C; --ac-blue-lt: #E6F1FB;
+      --green: #1D9E75; --red: #A32D2D; --red-lt: #FCEBEB;
+      --bg: #F1EFE8; --surf: #FFFFFF; --border: rgba(0,0,0,0.12);
+      --border2: rgba(0,0,0,0.22); --text: #1a1a18; --muted: #5F5E5A;
+      --hint: #888780; --r: 14px; --rm: 8px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #1C1C1A; --surf: #252523; --border: rgba(255,255,255,0.10);
+        --border2: rgba(255,255,255,0.22); --text: #F1EFE8; --muted: #B4B2A9;
+        --ac-blue-lt: #0C447C; --red-lt: #791F1F; }
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg); min-height: 100vh; display: flex;
+      align-items: center; justify-content: center; padding: 20px; }
+    .wrapper { width: 100%; max-width: 420px; }
+    .brand { text-align: center; margin-bottom: 28px; }
+    .brand-icon { width: 52px; height: 52px; background: var(--ac-blue);
+      border-radius: 14px; display: inline-flex; align-items: center;
+      justify-content: center; margin-bottom: 12px; }
+    .brand-icon svg { width: 28px; height: 28px; }
+    .brand h1 { font-size: 20px; font-weight: 700; margin-bottom: 3px; }
+    .brand p { font-size: 12px; color: var(--muted); }
+    .brand-tag { display: inline-block; background: var(--ac-blue); color: #fff;
+      font-size: 9px; font-weight: 700; padding: 2px 9px; border-radius: 10px;
+      letter-spacing: .07em; text-transform: uppercase; margin-top: 6px; }
+    .card { background: var(--surf); border: 0.5px solid var(--border);
+      border-radius: var(--r); padding: 28px 28px 24px; }
+    .tabs { display: flex; gap: 4px; background: var(--bg);
+      border-radius: var(--rm); padding: 3px; margin-bottom: 22px; }
+    .tab { flex: 1; padding: 7px; border: none; background: none;
+      border-radius: 6px; font-size: 13px; font-weight: 600; color: var(--muted);
+      cursor: pointer; transition: all .15s; font-family: inherit; }
+    .tab.on { background: var(--surf); color: var(--ac-blue); border: 0.5px solid var(--border); }
+    .form-section { display: none; }
+    .form-section.on { display: block; }
+    .fg { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+    .flbl { font-size: 11px; font-weight: 600; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .05em; }
+    .finp { font-family: inherit; font-size: 14px; padding: 10px 12px;
+      border-radius: var(--rm); border: 0.5px solid var(--border2);
+      background: var(--surf); color: var(--text); outline: none; width: 100%; }
+    .finp:focus { border-color: var(--ac-blue); box-shadow: 0 0 0 3px rgba(24,95,165,.12); }
+    .role-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+    .role-btn { padding: 9px; border-radius: var(--rm); border: 0.5px solid var(--border2);
+      background: var(--surf); color: var(--muted); font-size: 12.5px; font-weight: 600;
+      cursor: pointer; text-align: center; transition: all .15s; font-family: inherit; }
+    .role-btn.on { border-color: var(--ac-blue); background: var(--ac-blue-lt); color: var(--ac-blue); }
+    .btn-submit { width: 100%; padding: 11px; background: var(--ac-blue); color: #fff;
+      border: none; border-radius: var(--rm); font-size: 14px; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .15s; margin-top: 4px; }
+    .btn-submit:hover { background: var(--ac-blue-dk); }
+    .btn-submit:disabled { opacity: .6; cursor: not-allowed; }
+    .msg { padding: 10px 13px; border-radius: var(--rm); font-size: 12.5px;
+      margin-bottom: 14px; display: none; }
+    .msg.err { background: var(--red-lt); color: var(--red); border: 0.5px solid var(--red); display: block; }
+    .msg.ok { background: #E1F5EE; color: #085041; border: 0.5px solid #1D9E75; display: block; }
+    .spinner { display: inline-block; width: 14px; height: 14px;
+      border: 2px solid rgba(255,255,255,.4); border-top-color: #fff;
+      border-radius: 50%; animation: spin .7s linear infinite;
+      vertical-align: middle; margin-right: 6px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .divider { text-align: center; color: var(--hint); font-size: 11px;
+      margin: 16px 0; position: relative; }
+    .divider::before, .divider::after { content: ''; position: absolute; top: 50%;
+      width: 42%; height: 0.5px; background: var(--border); }
+    .divider::before { left: 0; } .divider::after { right: 0; }
+    .footer { text-align: center; margin-top: 18px; font-size: 11px; color: var(--hint); }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="brand">
+    <div class="brand-icon">
+      <svg viewBox="0 0 28 28" fill="none">
+        <rect x="1" y="5" width="26" height="17" rx="3" stroke="white" stroke-width="2"/>
+        <path d="M9 22v3M19 22v3M6 25h16" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <path d="M6 11h16M6 15.5h10" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <h1>American Computers Albania</h1>
+    <p>Supply Chain Analytics System</p>
+    <div class="brand-tag">AI-Powered · v1.0</div>
+  </div>
+
+  <div class="card">
+    <div class="tabs">
+      <button class="tab on" onclick="switchTab('login', this)">Sign in</button>
+      <button class="tab" onclick="switchTab('signup', this)">Create account</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="form-section on" id="fs-login">
+      <div class="msg" id="login-msg"></div>
+      <div class="fg">
+        <label class="flbl">Username</label>
+        <input class="finp" type="text" id="l-user" placeholder="Enter your username"/>
+      </div>
+      <div class="fg">
+        <label class="flbl">Password</label>
+        <input class="finp" type="password" id="l-pass" placeholder="Enter your password"/>
+      </div>
+      <button class="btn-submit" id="login-btn" onclick="doLogin()">Sign in</button>
+      <div style="text-align:center;margin-top:12px;font-size:12px">
+        <span style="color:var(--ac-blue);cursor:pointer;font-weight:600" onclick="showForgot()">Forgot password?</span>
+      </div>
+      <div class="divider">or</div>
+      <div style="text-align:center;font-size:12px;color:var(--muted)">
+        Don't have an account?
+        <span style="color:var(--ac-blue);cursor:pointer;font-weight:600" onclick="switchTabByName('signup')">Create one</span>
+      </div>
+    </div>
+
+    <!-- SIGNUP -->
+    <div class="form-section" id="fs-signup">
+      <div class="msg" id="signup-msg"></div>
+      <div class="fg">
+        <label class="flbl">Full name</label>
+        <input class="finp" type="text" id="s-name" placeholder="e.g. Natali Hoxha"/>
+      </div>
+      <div class="fg">
+        <label class="flbl">Username</label>
+        <input class="finp" type="text" id="s-user" placeholder="Choose a username"/>
+      </div>
+      <div class="fg">
+        <label class="flbl">Email</label>
+        <input class="finp" type="email" id="s-email" placeholder="your@email.com"/>
+      </div>
+      <div class="fg">
+        <label class="flbl">Password</label>
+        <input class="finp" type="password" id="s-pass" placeholder="At least 8 characters"/>
+      </div>
+      <label class="flbl" style="display:block;margin-bottom:7px">Role</label>
+      <div class="role-row">
+        <button class="role-btn on" id="role-viewer" onclick="selectRole('viewer')">
+          Viewer<br><span style="font-size:10px;font-weight:400">Read-only access</span>
+        </button>
+        <button class="role-btn" id="role-admin" onclick="selectRole('admin')">
+          Admin<br><span style="font-size:10px;font-weight:400">Full access</span>
+        </button>
+      </div>
+      <button class="btn-submit" id="signup-btn" onclick="doSignup()">Create account</button>
+      <div class="divider">or</div>
+      <div style="text-align:center;font-size:12px;color:var(--muted)">
+        Already have an account?
+        <span style="color:var(--ac-blue);cursor:pointer;font-weight:600" onclick="switchTabByName('login')">Sign in</span>
+      </div>
+    </div>
+
+    <!-- FORGOT PASSWORD -->
+    <div class="form-section" id="fs-forgot">
+      <div class="msg" id="forgot-msg"></div>
+      <p style="font-size:12.5px;color:var(--muted);margin-bottom:16px">Enter your email and we'll send you a link to reset your password.</p>
+      <div class="fg">
+        <label class="flbl">Email address</label>
+        <input class="finp" type="email" id="f-email" placeholder="your@email.com"/>
+      </div>
+      <button class="btn-submit" id="forgot-btn" onclick="doForgot()">Send reset link</button>
+      <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--muted)">
+        <span style="color:var(--ac-blue);cursor:pointer;font-weight:600" onclick="switchTabByName('login')">← Back to sign in</span>
+      </div>
+    </div>
+
+  </div>
+  <div class="footer">American Computers Albania &copy; 2024 · Tirana, Albania</div>
+</div>
+
+<script>
+const API = 'http://localhost:8000/api/v1';
+let selectedRole = 'viewer';
+
+if (localStorage.getItem('ac_token')) window.location.href = 'index.html';
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+  document.querySelectorAll('.form-section').forEach(s => s.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('fs-' + name).classList.add('on');
+  clearMsgs();
+}
+
+function switchTabByName(name) {
+  const tabs = document.querySelectorAll('.tab');
+  tabs.forEach((t, i) => t.classList.toggle('on', (i === 0 ? 'login' : 'signup') === name));
+  document.querySelectorAll('.form-section').forEach(s => s.classList.remove('on'));
+  document.getElementById('fs-' + name).classList.add('on');
+  clearMsgs();
+}
+
+function showForgot() {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+  document.querySelectorAll('.form-section').forEach(s => s.classList.remove('on'));
+  document.getElementById('fs-forgot').classList.add('on');
+  clearMsgs();
+}
+
+function clearMsgs() {
+  document.querySelectorAll('.msg').forEach(m => { m.className = 'msg'; m.textContent = ''; });
+}
+
+function showMsg(id, text, type) {
+  const el = document.getElementById(id);
+  el.textContent = text;
+  el.className = 'msg ' + type;
+}
+
+function selectRole(role) {
+  selectedRole = role;
+  document.getElementById('role-viewer').classList.toggle('on', role === 'viewer');
+  document.getElementById('role-admin').classList.toggle('on', role === 'admin');
+}
+
+async function doLogin() {
+  const username = document.getElementById('l-user').value.trim();
+  const password = document.getElementById('l-pass').value;
+  if (!username || !password) { showMsg('login-msg', 'Please enter username and password.', 'err'); return; }
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Signing in...';
+  try {
+    const res = await fetch(`${API}/auth/token?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`, { method: 'POST' });
+    const data = await res.json();
+    if (!res.ok) { showMsg('login-msg', data.detail || 'Login failed.', 'err'); return; }
+    localStorage.setItem('ac_token', data.access_token);
+    localStorage.setItem('ac_user', JSON.stringify(data.user));
+    showMsg('login-msg', `Welcome, ${data.user.full_name || data.user.username}!`, 'ok');
+    setTimeout(() => window.location.href = 'index.html', 800);
+  } catch (e) {
+    showMsg('login-msg', 'Cannot reach the API. Make sure the backend is running.', 'err');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Sign in';
+  }
+}
+
+async function doSignup() {
+  const full_name = document.getElementById('s-name').value.trim();
+  const username  = document.getElementById('s-user').value.trim();
+  const email     = document.getElementById('s-email').value.trim();
+  const password  = document.getElementById('s-pass').value;
+  if (!username || !email || !password) { showMsg('signup-msg', 'Please fill in all fields.', 'err'); return; }
+  if (password.length < 8) { showMsg('signup-msg', 'Password must be at least 8 characters.', 'err'); return; }
+  const btn = document.getElementById('signup-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Creating account...';
+  try {
+    const res = await fetch(`${API}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ full_name, username, email, password, role: selectedRole }),
+    });
+    const data = await res.json();
+    if (!res.ok) { showMsg('signup-msg', data.detail || 'Registration failed.', 'err'); return; }
+    showMsg('signup-msg', `Account created! You can now sign in as ${data.username}.`, 'ok');
+    setTimeout(() => switchTabByName('login'), 1500);
+  } catch (e) {
+    showMsg('signup-msg', 'Cannot reach the API. Make sure the backend is running.', 'err');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Create account';
+  }
+}
+
+async function doForgot() {
+  const email = document.getElementById('f-email').value.trim();
+  if (!email) { showMsg('forgot-msg', 'Please enter your email address.', 'err'); return; }
+  const btn = document.getElementById('forgot-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Sending...';
+  try {
+    const res = await fetch(`${API}/auth/forgot-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+    const data = await res.json();
+    showMsg('forgot-msg', data.message || 'Reset link sent! Check your email.', 'ok');
+  } catch(e) {
+    showMsg('forgot-msg', 'Cannot reach the API. Make sure the backend is running.', 'err');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Send reset link';
+  }
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    if (document.getElementById('fs-login').classList.contains('on')) doLogin();
+    else if (document.getElementById('fs-signup').classList.contains('on')) doSignup();
+    else if (document.getElementById('fs-forgot').classList.contains('on')) doForgot();
+  }
+});
+</script>
+</body>
+</html>

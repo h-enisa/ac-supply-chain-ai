@@ -7,13 +7,13 @@ from app.schemas.schemas import OrderOut
 router = APIRouter()
 @router.get('/', response_model=List[OrderOut], summary='Get all orders')
 def get_orders(
-status: Optional[str] = Query(None),
-db: Session = Depends(get_db)
+    status: Optional[str] = Query(None),
+    db: Session = Depends(get_db)
 ):
-q = db.query(Order)
-if status:
-try:
-q = q.filter(Order.status == OrderStatus(status))
-except ValueError:
-pass
-return q.order_by(Order.order_date.desc()).limit(100).all()
+    q = db.query(Order)
+    if status:
+        try:
+            q = q.filter(Order.status == OrderStatus(status))
+        except ValueError:
+            pass
+    return q.order_by(Order.order_date.desc()).limit(100).all()

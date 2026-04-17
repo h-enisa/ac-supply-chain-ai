@@ -5,3 +5,8 @@ __pycache__/
 .env
 *.pkl
 .DS_Store
+*.egg-info/
+dist/
+build/
+alembic/
+tests/

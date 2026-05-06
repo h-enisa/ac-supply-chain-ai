@@ -202,7 +202,7 @@ This creates all tables and inserts realistic test data including 7 anomalous or
 ### 6. Start the server
 
 ```bash
-uvicorn backend.main:app --reload --port 8000
+python -m http.server 5500
 ```
 
 ### 7. Open the frontend
@@ -210,7 +210,7 @@ uvicorn backend.main:app --reload --port 8000
 Open `frontend/index.html` in your browser, or serve it with:
 
 ```bash
-python -m http.server 5500 --directory frontend
+py -3.10 -m http.server 3000
 ```
 
 Then navigate to `http://localhost:5500`.

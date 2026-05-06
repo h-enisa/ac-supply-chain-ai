@@ -42,7 +42,7 @@ The system replaces manual spreadsheet-based tracking with an intelligent, data-
 | Name | Role | Responsibilities |
 |---|---|---|
 | **Enisa Halilaj** | Team Leader / Repo Master | Project coordination, GitHub management, CI, documentation |
-| **Natali Muca** | Backend / Authentication | FastAPI routes, JWT auth middleware, API endpoints, `auth.py`, `main.py`, `schemas.py` |
+| **Natalia Muça** | Backend / Authentication | FastAPI routes, JWT auth middleware, API endpoints, `auth.py`, `main.py`, `schemas.py` |
 | **Sabina Merkaj** | Database / Models | PostgreSQL schema, SQLAlchemy models, migrations, `models.py`, `database.py`, `seed_db.py` |
 | **Alesia Palloshi** | Frontend / Tester | HTML/JS pages, Chart.js integration, manual QA, all files under `frontend/` |
 | **Alesia Gjeta** | ML / ETL | ARIMA demand forecasting, anomaly detection, `forecasting.py`, `inference.py`, `etl.py` |

@@ -1,0 +1,109 @@
+========================================================
+USER STORIES — SUPPLY CHAIN MANAGER
+Project: American Computers Albania — Supply Chain AI
+========================================================
+
+ROLE DESCRIPTION:
+The Supply Chain Manager oversees all import operations,
+monitors inventory across 6 Albanian branches, and uses
+AI-powered insights to make data-driven decisions.
+
+--------------------------------------------------------
+STORY 1 — Live Dashboard Overview
+--------------------------------------------------------
+As a Supply Chain Manager,
+I want to see a live dashboard with key performance indicators
+(active orders, on-time delivery rate, inventory value, average delivery days)
+So that I can get an instant overview of the entire supply chain
+without having to check multiple systems.
+
+Acceptance Criteria:
+- Dashboard loads KPIs from the database in real time
+- Active orders count updates every time I refresh
+- On-time delivery percentage is calculated from actual vs estimated days
+- Inventory value in EUR is summed across all branches and products
+- Monthly order volume is displayed as a bar chart for the past 12 months
+
+--------------------------------------------------------
+STORY 2 — Inventory Monitoring Across Branches
+--------------------------------------------------------
+As a Supply Chain Manager,
+I want to view stock levels for all products across all 6 branches
+So that I can identify which products are low or out of stock
+before they affect sales.
+
+Acceptance Criteria:
+- Inventory table shows all SKUs with total quantity
+- Status badges show ok (green), low_stock (amber), out_of_stock (red)
+- I can search by SKU or product name
+- Reorder point is visible so I know the threshold
+
+--------------------------------------------------------
+STORY 3 — Order Tracking
+--------------------------------------------------------
+As a Supply Chain Manager,
+I want to view all import orders with their status and delay risk
+So that I can track which shipments are on time and which are delayed.
+
+Acceptance Criteria:
+- Orders table shows order reference, origin, branch, value, estimated days
+- I can filter orders by status (processing, in_transit, delivered, delayed)
+- Delay risk is shown as low (green), medium (amber), high (red)
+- Orders are sorted by most recent first
+
+--------------------------------------------------------
+STORY 4 — Demand Forecasting
+--------------------------------------------------------
+As a Supply Chain Manager,
+I want to run AI-powered demand forecasts by product category
+So that I can plan purchase orders in advance and avoid stockouts.
+
+Acceptance Criteria:
+- I can select any product category (Laptops, Smartphones, etc.)
+- I can set a forecast horizon between 7 and 90 days
+- The ARIMA model returns predicted demand with confidence bounds
+- Historical actual data is shown alongside the forecast
+- Model metrics (RMSE, MAE, R2) are displayed so I can trust the forecast
+
+--------------------------------------------------------
+STORY 5 — Delay Risk Prediction
+--------------------------------------------------------
+As a Supply Chain Manager,
+I want to predict the delay risk of a shipment before it departs
+So that I can take preventive action (change supplier, adjust route, etc.).
+
+Acceptance Criteria:
+- I can input shipment details (route, distance, weather score, customs risk, supplier rating, lead time)
+- The Random Forest model returns LOW / MEDIUM / HIGH risk classification
+- Contributing factors are shown with their percentage impact
+- Model accuracy, precision and recall are displayed
+
+--------------------------------------------------------
+STORY 6 — Supplier Performance
+--------------------------------------------------------
+As a Supply Chain Manager,
+I want to see supplier on-time delivery rates and lead times
+So that I can evaluate which suppliers are reliable and which need review.
+
+Acceptance Criteria:
+- Supplier directory shows all 10 EU suppliers with ratings
+- On-time delivery rate chart is shown per supplier
+- Average lead time chart compares all suppliers
+- Suppliers with on-time rate below 80% are highlighted in red
+
+--------------------------------------------------------
+STORY 7 — Route Optimization
+--------------------------------------------------------
+As a Supply Chain Manager,
+I want to optimize delivery routes from the Tirana hub to all branches
+So that I can reduce transportation costs and delivery times.
+
+Acceptance Criteria:
+- I can choose optimization objective: minimize time, minimize cost, or balanced
+- I can set the number of available vehicles
+- The optimizer returns cost savings percentage per route
+- Total cost saving in EUR is displayed
+
+========================================================
+END OF MANAGER STORIES
+========================================================

@@ -57,6 +57,7 @@ As a Supplier,
 I want my average lead time to be compared against other suppliers
 So that I can see how competitive my delivery times are.
 
+
 Acceptance Criteria:
 - Average lead time chart compares all suppliers side by side
 - My lead time is clearly identifiable in the chart

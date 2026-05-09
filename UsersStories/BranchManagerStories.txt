@@ -1,0 +1,77 @@
+========================================================
+USER STORIES — BRANCH MANAGER
+Project: American Computers Albania — Supply Chain AI
+========================================================
+
+ROLE DESCRIPTION:
+The Branch Manager oversees daily operations at one of the
+6 American Computers Albania branches (Tirana, Shkoder,
+Elbasan, Vlore, Berat, Pogradec). They monitor local stock
+and track incoming orders for their branch.
+
+--------------------------------------------------------
+STORY 1 — Branch Inventory View
+--------------------------------------------------------
+As a Branch Manager,
+I want to see the inventory levels at my branch
+So that I know which products I have in stock and which need reordering.
+
+Acceptance Criteria:
+- Inventory table shows products with current stock quantity
+- Products are color coded by status (ok, low_stock, out_of_stock)
+- I can filter inventory by product category
+- Reorder point is visible so I know when to request restocking
+
+--------------------------------------------------------
+STORY 2 — Incoming Orders Tracking
+--------------------------------------------------------
+As a Branch Manager,
+I want to see all orders coming to my branch
+So that I can prepare for incoming stock and plan space accordingly.
+
+Acceptance Criteria:
+- Orders table can be filtered by branch
+- I can see estimated delivery dates for in-transit orders
+- Delayed orders are highlighted with a red badge
+- Order value is shown so I can plan budget allocation
+
+--------------------------------------------------------
+STORY 3 — Low Stock Alerts
+--------------------------------------------------------
+As a Branch Manager,
+I want to receive alerts when products fall below the reorder point
+So that I can request restocking before products run out.
+
+Acceptance Criteria:
+- Dashboard live alerts show how many SKUs are below reorder point
+- Low stock count is shown prominently on the dashboard
+- Out of stock count is shown separately from low stock
+- Alert timestamps show when the stock issue was detected
+
+--------------------------------------------------------
+STORY 4 — Sales Distribution Visibility
+--------------------------------------------------------
+As a Branch Manager,
+I want to see how my branch compares to others in terms of order volume
+So that I understand my branch's contribution to overall company performance.
+
+Acceptance Criteria:
+- Sales by branch doughnut chart is visible on the dashboard
+- Each branch is shown with a distinct color
+- My branch order count is identifiable in the chart
+
+--------------------------------------------------------
+STORY 5 — Product Search
+--------------------------------------------------------
+As a Branch Manager,
+I want to search for specific products by SKU or name
+So that I can quickly find the stock status of any product.
+
+Acceptance Criteria:
+- Search input filters the inventory table in real time
+- Search works by both SKU code and product name
+- Results update instantly as I type without page reload
+
+========================================================
+END OF BRANCH MANAGER STORIES
+========================================================

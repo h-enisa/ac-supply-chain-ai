@@ -67,6 +67,7 @@ As a Viewer,
 I should not see or access the User Management section
 So that sensitive user data is protected from unauthorized viewing.
 
+
 Acceptance Criteria:
 - User Management menu item is hidden for viewer role
 - Navigating directly to the users section is not possible

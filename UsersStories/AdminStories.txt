@@ -79,6 +79,7 @@ As a System Administrator,
 I want to review flagged anomalous orders in the system
 So that I can investigate suspicious shipments and take action.
 
+
 Acceptance Criteria:
 - Anomaly detection scans recent orders from the database
 - Each anomaly shows order reference, anomaly type and description

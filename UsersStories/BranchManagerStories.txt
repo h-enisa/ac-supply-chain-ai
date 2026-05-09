@@ -67,6 +67,7 @@ As a Branch Manager,
 I want to search for specific products by SKU or name
 So that I can quickly find the stock status of any product.
 
+
 Acceptance Criteria:
 - Search input filters the inventory table in real time
 - Search works by both SKU code and product name

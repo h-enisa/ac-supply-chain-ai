@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_forecast" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="18.13.2">
+  <collaboration id="Collab_forecast">
+    <participant id="part_forecast" name="Demand Forecast Flow" processRef="proc_forecast" />
+  </collaboration>
+  <process id="proc_forecast" name="Demand Forecast Process" isExecutable="false">
+    <laneSet id="ls_forecast">
+      <lane id="lane_client" name="Client">
+        <flowNodeRef>ev_start</flowNodeRef>
+        <flowNodeRef>t_request</flowNodeRef>
+        <flowNodeRef>t_display</flowNodeRef>
+        <flowNodeRef>ev_end</flowNodeRef>
+      </lane>
+      <lane id="lane_api" name="FastAPI — /ml/forecast">
+        <flowNodeRef>t_validate</flowNodeRef>
+        <flowNodeRef>gw_model</flowNodeRef>
+        <flowNodeRef>t_retrain</flowNodeRef>
+        <flowNodeRef>t_load</flowNodeRef>
+        <flowNodeRef>t_build_response</flowNodeRef>
+      </lane>
+      <lane id="lane_ml" name="ML Service — ARIMA">
+        <flowNodeRef>t_fetch_data</flowNodeRef>
+        <flowNodeRef>t_preprocess</flowNodeRef>
+        <flowNodeRef>t_arima_fit</flowNodeRef>
+        <flowNodeRef>t_forecast</flowNodeRef>
+        <flowNodeRef>t_metrics</flowNodeRef>
+      </lane>
+      <lane id="lane_db" name="Database">
+        <flowNodeRef>t_read_demand</flowNodeRef>
+      </lane>
+    </laneSet>
+
+    <startEvent id="ev_start" name="Client Requests Forecast" />
+    <task id="t_request" name="POST /ml/forecast&#10;{ category, horizon_days }" />
+    <task id="t_validate" name="Validate Request&#10;Pydantic Schema" />
+    <exclusiveGateway id="gw_model" name="Model Loaded?" />
+    <task id="t_retrain" name="Retrain ARIMA&#10;on demand_records" />
+    <task id="t_load" name="Load arima_model.pkl&#10;joblib.load()" />
+    <task id="t_fetch_data" name="Fetch demand_records&#10;by category" />
+    <task id="t_read_demand" name="SELECT FROM demand_records&#10;WHERE category = ?" />
+    <task id="t_preprocess" name="Preprocess Time Series&#10;group by date, sum quantity" />
+    <task id="t_arima_fit" name="ARIMA(2,1,2).fit()&#10;statsmodels" />
+    <task id="t_forecast" name="get_forecast(steps=horizon)&#10;mean + conf. interval (85%)" />
+    <task id="t_metrics" name="Calculate Metrics&#10;RMSE, MAE, R²" />
+    <task id="t_build_response" name="Build Response&#10;{ forecast[], rmse, mae, r2 }" />
+    <task id="t_display" name="Display Forecast Chart&#10;with Confidence Bands" />
+    <endEvent id="ev_end" name="Forecast Complete" />
+
+    <sequenceFlow id="sf1" sourceRef="ev_start" targetRef="t_request" />
+    <sequenceFlow id="sf2" sourceRef="t_request" targetRef="t_validate" />
+    <sequenceFlow id="sf3" sourceRef="t_validate" targetRef="gw_model" />
+    <sequenceFlow id="sf4" name="No" sourceRef="gw_model" targetRef="t_retrain" />
+    <sequenceFlow id="sf5" sourceRef="t_retrain" targetRef="t_load" />
+    <sequenceFlow id="sf6" name="Yes" sourceRef="gw_model" targetRef="t_load" />
+    <sequenceFlow id="sf7" sourceRef="t_load" targetRef="t_fetch_data" />
+    <sequenceFlow id="sf8" sourceRef="t_fetch_data" targetRef="t_read_demand" />
+    <sequenceFlow id="sf9" sourceRef="t_read_demand" targetRef="t_preprocess" />
+    <sequenceFlow id="sf10" sourceRef="t_preprocess" targetRef="t_arima_fit" />
+    <sequenceFlow id="sf11" sourceRef="t_arima_fit" targetRef="t_forecast" />
+    <sequenceFlow id="sf12" sourceRef="t_forecast" targetRef="t_metrics" />
+    <sequenceFlow id="sf13" sourceRef="t_metrics" targetRef="t_build_response" />
+    <sequenceFlow id="sf14" sourceRef="t_build_response" targetRef="t_display" />
+    <sequenceFlow id="sf15" sourceRef="t_display" targetRef="ev_end" />
+  </process>
+
+  <bpmndi:BPMNDiagram id="BPMNDiagram_forecast">
+    <bpmndi:BPMNPlane id="BPMNPlane_forecast" bpmnElement="Collab_forecast">
+      <bpmndi:BPMNShape id="part_forecast_di" bpmnElement="part_forecast" isHorizontal="true">
+        <dc:Bounds x="130" y="80" width="2100" height="660" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="lane_client_di" bpmnElement="lane_client" isHorizontal="true">
+        <dc:Bounds x="180" y="80" width="2050" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="lane_api_di" bpmnElement="lane_api" isHorizontal="true">
+        <dc:Bounds x="180" y="230" width="2050" height="170" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="lane_ml_di" bpmnElement="lane_ml" isHorizontal="true">
+        <dc:Bounds x="180" y="400" width="2050" height="180" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="lane_db_di" bpmnElement="lane_db" isHorizontal="true">
+        <dc:Bounds x="180" y="580" width="2050" height="160" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="ev_start_di" bpmnElement="ev_start"><dc:Bounds x="212" y="137" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_request_di" bpmnElement="t_request"><dc:Bounds x="300" y="115" width="180" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_display_di" bpmnElement="t_display"><dc:Bounds x="1760" y="115" width="200" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ev_end_di" bpmnElement="ev_end"><dc:Bounds x="2022" y="137" width="36" height="36" /></bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="t_validate_di" bpmnElement="t_validate"><dc:Bounds x="540" y="265" width="160" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="gw_model_di" bpmnElement="gw_model" isMarkerVisible="true"><dc:Bounds x="755" y="280" width="50" height="50" /><bpmndi:BPMNLabel><dc:Bounds x="740" y="337" width="80" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_retrain_di" bpmnElement="t_retrain"><dc:Bounds x="860" y="230" width="160" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_load_di" bpmnElement="t_load"><dc:Bounds x="1080" y="265" width="160" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_build_response_di" bpmnElement="t_build_response"><dc:Bounds x="1620" y="265" width="180" height="80" /></bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="t_fetch_data_di" bpmnElement="t_fetch_data"><dc:Bounds x="1080" y="440" width="160" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_preprocess_di" bpmnElement="t_preprocess"><dc:Bounds x="1300" y="440" width="160" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_arima_fit_di" bpmnElement="t_arima_fit"><dc:Bounds x="1520" y="440" width="160" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_forecast_di" bpmnElement="t_forecast"><dc:Bounds x="1740" y="440" width="180" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_metrics_di" bpmnElement="t_metrics"><dc:Bounds x="1960" y="440" width="160" height="80" /></bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="t_read_demand_di" bpmnElement="t_read_demand"><dc:Bounds x="1080" y="620" width="200" height="80" /></bpmndi:BPMNShape>
+
+      <bpmndi:BPMNEdge id="sf1_di" bpmnElement="sf1"><di:waypoint x="248" y="155" /><di:waypoint x="300" y="155" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf2_di" bpmnElement="sf2"><di:waypoint x="390" y="155" /><di:waypoint x="620" y="155" /><di:waypoint x="620" y="265" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf3_di" bpmnElement="sf3"><di:waypoint x="700" y="305" /><di:waypoint x="755" y="305" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf4_di" bpmnElement="sf4"><di:waypoint x="780" y="280" /><di:waypoint x="780" y="270" /><di:waypoint x="860" y="270" /><bpmndi:BPMNLabel><dc:Bounds x="793" y="265" width="15" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf5_di" bpmnElement="sf5"><di:waypoint x="1020" y="270" /><di:waypoint x="1080" y="305" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf6_di" bpmnElement="sf6"><di:waypoint x="805" y="305" /><di:waypoint x="1080" y="305" /><bpmndi:BPMNLabel><dc:Bounds x="920" y="287" width="19" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf7_di" bpmnElement="sf7"><di:waypoint x="1160" y="345" /><di:waypoint x="1160" y="440" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf8_di" bpmnElement="sf8"><di:waypoint x="1160" y="520" /><di:waypoint x="1160" y="620" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf9_di" bpmnElement="sf9"><di:waypoint x="1280" y="660" /><di:waypoint x="1380" y="660" /><di:waypoint x="1380" y="520" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf10_di" bpmnElement="sf10"><di:waypoint x="1460" y="480" /><di:waypoint x="1520" y="480" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf11_di" bpmnElement="sf11"><di:waypoint x="1680" y="480" /><di:waypoint x="1740" y="480" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf12_di" bpmnElement="sf12"><di:waypoint x="1920" y="480" /><di:waypoint x="1960" y="480" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf13_di" bpmnElement="sf13"><di:waypoint x="2040" y="440" /><di:waypoint x="2040" y="380" /><di:waypoint x="1710" y="380" /><di:waypoint x="1710" y="345" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf14_di" bpmnElement="sf14"><di:waypoint x="1800" y="265" /><di:waypoint x="1800" y="195" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf15_di" bpmnElement="sf15"><di:waypoint x="1960" y="155" /><di:waypoint x="2022" y="155" /></bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

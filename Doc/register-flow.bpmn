@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_register" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="18.13.2">
+  <collaboration id="Collab_register">
+    <participant id="part_register" name="Register Flow" processRef="proc_register" />
+  </collaboration>
+  <process id="proc_register" name="Register Process" isExecutable="false">
+    <laneSet id="ls_register">
+      <lane id="lane_client" name="Client (Frontend)">
+        <flowNodeRef>ev_start</flowNodeRef>
+        <flowNodeRef>t_fill_form</flowNodeRef>
+        <flowNodeRef>t_submit</flowNodeRef>
+        <flowNodeRef>t_show_error</flowNodeRef>
+        <flowNodeRef>t_show_success</flowNodeRef>
+        <flowNodeRef>t_redirect</flowNodeRef>
+        <flowNodeRef>ev_end</flowNodeRef>
+      </lane>
+      <lane id="lane_api" name="Backend (FastAPI)">
+        <flowNodeRef>t_validate</flowNodeRef>
+        <flowNodeRef>gw_exists</flowNodeRef>
+        <flowNodeRef>t_hash</flowNodeRef>
+        <flowNodeRef>t_create_user</flowNodeRef>
+        <flowNodeRef>t_jwt</flowNodeRef>
+      </lane>
+      <lane id="lane_db" name="Database (PostgreSQL)">
+        <flowNodeRef>t_check_email</flowNodeRef>
+        <flowNodeRef>t_insert_user</flowNodeRef>
+      </lane>
+    </laneSet>
+
+    <startEvent id="ev_start" name="Open Register Page" />
+    <task id="t_fill_form" name="Fill Registration Form&#10;(username, email, password, role)" />
+    <task id="t_submit" name="Submit Form&#10;POST /auth/register" />
+    <task id="t_validate" name="Validate Input&#10;Pydantic Schema" />
+    <task id="t_check_email" name="SELECT * FROM users&#10;WHERE email = ?" />
+    <exclusiveGateway id="gw_exists" name="Email Exists?" />
+    <task id="t_show_error" name="Return 400&#10;Email already registered" />
+    <task id="t_hash" name="bcrypt.hash(password)&#10;Generate password hash" />
+    <task id="t_create_user" name="Create User Object&#10;role: admin / viewer" />
+    <task id="t_insert_user" name="INSERT INTO users&#10;Commit to DB" />
+    <task id="t_jwt" name="create_access_token()&#10;JWT { sub, role }" />
+    <task id="t_show_success" name="201 Created&#10;{ access_token, user }" />
+    <task id="t_redirect" name="Redirect to Dashboard" />
+    <endEvent id="ev_end" name="Registered" />
+
+    <sequenceFlow id="sf1" sourceRef="ev_start" targetRef="t_fill_form" />
+    <sequenceFlow id="sf2" sourceRef="t_fill_form" targetRef="t_submit" />
+    <sequenceFlow id="sf3" sourceRef="t_submit" targetRef="t_validate" />
+    <sequenceFlow id="sf4" sourceRef="t_validate" targetRef="t_check_email" />
+    <sequenceFlow id="sf5" sourceRef="t_check_email" targetRef="gw_exists" />
+    <sequenceFlow id="sf6" name="Yes" sourceRef="gw_exists" targetRef="t_show_error" />
+    <sequenceFlow id="sf7" sourceRef="t_show_error" targetRef="t_fill_form" />
+    <sequenceFlow id="sf8" name="No" sourceRef="gw_exists" targetRef="t_hash" />
+    <sequenceFlow id="sf9" sourceRef="t_hash" targetRef="t_create_user" />
+    <sequenceFlow id="sf10" sourceRef="t_create_user" targetRef="t_insert_user" />
+    <sequenceFlow id="sf11" sourceRef="t_insert_user" targetRef="t_jwt" />
+    <sequenceFlow id="sf12" sourceRef="t_jwt" targetRef="t_show_success" />
+    <sequenceFlow id="sf13" sourceRef="t_show_success" targetRef="t_redirect" />
+    <sequenceFlow id="sf14" sourceRef="t_redirect" targetRef="ev_end" />
+  </process>
+
+  <bpmndi:BPMNDiagram id="BPMNDiagram_register">
+    <bpmndi:BPMNPlane id="BPMNPlane_register" bpmnElement="Collab_register">
+      <bpmndi:BPMNShape id="part_register_di" bpmnElement="part_register" isHorizontal="true">
+        <dc:Bounds x="130" y="80" width="2000" height="540" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="lane_client_di" bpmnElement="lane_client" isHorizontal="true">
+        <dc:Bounds x="180" y="80" width="1950" height="180" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="lane_api_di" bpmnElement="lane_api" isHorizontal="true">
+        <dc:Bounds x="180" y="260" width="1950" height="180" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="lane_db_di" bpmnElement="lane_db" isHorizontal="true">
+        <dc:Bounds x="180" y="440" width="1950" height="180" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="ev_start_di" bpmnElement="ev_start">
+        <dc:Bounds x="212" y="152" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="190" y="195" width="80" height="27" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_fill_form_di" bpmnElement="t_fill_form">
+        <dc:Bounds x="300" y="130" width="180" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_submit_di" bpmnElement="t_submit">
+        <dc:Bounds x="540" y="130" width="160" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_show_error_di" bpmnElement="t_show_error">
+        <dc:Bounds x="900" y="130" width="160" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_show_success_di" bpmnElement="t_show_success">
+        <dc:Bounds x="1480" y="130" width="160" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_redirect_di" bpmnElement="t_redirect">
+        <dc:Bounds x="1700" y="130" width="160" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ev_end_di" bpmnElement="ev_end">
+        <dc:Bounds x="1922" y="152" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1910" y="195" width="60" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="t_validate_di" bpmnElement="t_validate">
+        <dc:Bounds x="540" y="310" width="160" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="gw_exists_di" bpmnElement="gw_exists" isMarkerVisible="true">
+        <dc:Bounds x="995" y="325" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="984" y="382" width="72" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_hash_di" bpmnElement="t_hash">
+        <dc:Bounds x="1100" y="310" width="180" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_create_user_di" bpmnElement="t_create_user">
+        <dc:Bounds x="1340" y="310" width="180" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_jwt_di" bpmnElement="t_jwt">
+        <dc:Bounds x="1580" y="310" width="180" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="t_check_email_di" bpmnElement="t_check_email">
+        <dc:Bounds x="760" y="490" width="180" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_insert_user_di" bpmnElement="t_insert_user">
+        <dc:Bounds x="1340" y="490" width="180" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNEdge id="sf1_di" bpmnElement="sf1"><di:waypoint x="248" y="170" /><di:waypoint x="300" y="170" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf2_di" bpmnElement="sf2"><di:waypoint x="480" y="170" /><di:waypoint x="540" y="170" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf3_di" bpmnElement="sf3"><di:waypoint x="620" y="210" /><di:waypoint x="620" y="310" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf4_di" bpmnElement="sf4"><di:waypoint x="700" y="350" /><di:waypoint x="760" y="530" /><di:waypoint x="760" y="490" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf5_di" bpmnElement="sf5"><di:waypoint x="940" y="530" /><di:waypoint x="995" y="350" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf6_di" bpmnElement="sf6"><di:waypoint x="1020" y="325" /><di:waypoint x="1020" y="260" /><di:waypoint x="980" y="260" /><di:waypoint x="980" y="210" /><bpmndi:BPMNLabel><dc:Bounds x="990" y="285" width="19" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf7_di" bpmnElement="sf7"><di:waypoint x="900" y="170" /><di:waypoint x="480" y="170" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf8_di" bpmnElement="sf8"><di:waypoint x="1045" y="350" /><di:waypoint x="1100" y="350" /><bpmndi:BPMNLabel><dc:Bounds x="1057" y="332" width="15" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf9_di" bpmnElement="sf9"><di:waypoint x="1280" y="350" /><di:waypoint x="1340" y="350" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf10_di" bpmnElement="sf10"><di:waypoint x="1430" y="390" /><di:waypoint x="1430" y="490" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf11_di" bpmnElement="sf11"><di:waypoint x="1520" y="530" /><di:waypoint x="1670" y="530" /><di:waypoint x="1670" y="390" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf12_di" bpmnElement="sf12"><di:waypoint x="1760" y="350" /><di:waypoint x="1800" y="350" /><di:waypoint x="1800" y="260" /><di:waypoint x="1560" y="260" /><di:waypoint x="1560" y="210" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf13_di" bpmnElement="sf13"><di:waypoint x="1640" y="170" /><di:waypoint x="1700" y="170" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf14_di" bpmnElement="sf14"><di:waypoint x="1860" y="170" /><di:waypoint x="1922" y="170" /></bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

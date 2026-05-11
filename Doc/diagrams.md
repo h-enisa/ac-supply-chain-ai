@@ -125,10 +125,6 @@ erDiagram
 
 ![Login Flow BPMN](Login-Flow-BPMN.svg)
 
-# M.I.A Chat Flow
-
-![M.I.A Chat Flow BPMN](M.I.A-Chat-Flow-BPMN.svg)
-
 # Assignment Submission Flow
 
 ![Assignment Submission Flow BPMN](Assignment-Submission-BPMN.svg)

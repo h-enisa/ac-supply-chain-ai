@@ -121,6 +121,7 @@ erDiagram
     ORDERS ||--o{ ANOMALIES : "flagged by"
 ```
 
+
 # Login Flow
 
 ![Login Flow BPMN](Login-Flow-BPMN.svg)
@@ -149,6 +150,7 @@ flowchart LR
     SYS -->|password reset emails| EMAIL
     SYS <-->|inference requests\n& predictions| ML
 ```
+
 
 # DFD Level 1 — Process Detail
 

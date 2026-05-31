@@ -35,6 +35,7 @@ def log_search(payload: SearchLogPayload, db: Session = Depends(get_db)):
     return {"logged": True}
 
 
+
 @public_router.get("/products")
 def public_products(
     search: Optional[str] = Query(None),

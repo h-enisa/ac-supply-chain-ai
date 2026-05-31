@@ -8,11 +8,10 @@ from app.core.auth import get_current_user
 
 api_router = APIRouter()
 
-# Public routes (no token required)
 api_router.include_router(auth_router, prefix="/auth", tags=["Authentication"])
 api_router.include_router(public_router, prefix="/public", tags=["Public"])
 
-# Protected routes
+
 protected = {"dependencies": [Depends(get_current_user)]}
 
 api_router.include_router(dashboard.router, prefix="/dashboard", tags=["Dashboard"], **protected)

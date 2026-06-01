@@ -39,10 +39,10 @@ The system replaces manual spreadsheet-based tracking with an intelligent, data-
 
 | Name | Role | Branch |
 |------|------|--------|
-| Enisa Halilaj | Team Leader / Repo Master / API Endpoints | `enisa/api-endpoints` |
+| Enisa Halilaj | Team Leader / Repo Master / API Endpoints / Tester | `enisa/api-endpoints` |
 | Natali Muca | Backend / Authentication | `natalia/backend-auth` |
 | Sabina Merkaj | Database / Models | `sabina/database-models` |
-| Alesia Palloshi | Frontend / Tester | `alesia-palloshi/frontend` |
+| Alesia Palloshi | Frontend | `alesia-palloshi/frontend` |
 | Alesia Gjeta | ML / ETL / AI Agent | `alesia-gjeta/ml-models` |
 
 ---

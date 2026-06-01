@@ -1,6 +1,3 @@
 [submodule "ac-supply-chain-ai"]
 	path = ac-supply-chain-ai
 	url = https://github.com/h-enisa/ac-supply-chain-ai.git
-[submodule "ac-supply-chain-ai.wiki"]
-	path = ac-supply-chain-ai.wiki
-	url = https://github.com/h-enisa/ac-supply-chain-ai.wiki.git

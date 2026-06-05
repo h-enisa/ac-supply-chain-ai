@@ -43,3 +43,4 @@ staff --> UC9
 note right of UC7 : RandomForest\npredict_delay()
 note right of UC6 : ARIMA(2,1,2)\npredict_demand()
 @enduml
+

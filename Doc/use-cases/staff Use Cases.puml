@@ -1,0 +1,46 @@
+@startuml use-case-staff
+skinparam actorStyle awesome
+skinparam backgroundColor white
+skinparam usecaseBorderColor #222
+skinparam usecaseBackgroundColor white
+skinparam arrowColor #222
+skinparam actorBorderColor #222
+skinparam actorBackgroundColor white
+skinparam noteBorderColor #d6b656
+skinparam noteBackgroundColor #ffffcc
+
+title Staff Use Cases — AC Supply Chain Analytics
+
+left to right direction
+
+actor "Staff" as staff
+
+rectangle "AC Supply Chain System" {
+  usecase "Login / Register" as UC1
+  usecase "View Orders" as UC2
+  usecase "Create Order" as UC3
+  usecase "View Inventory" as UC4
+  usecase "View KPIs" as UC5
+  usecase "Forecast Demand" as UC6
+  usecase "Predict Delay Risk" as UC7
+  usecase "Chat with Agent" as UC8
+  usecase "Manage Suppliers" as UC9
+  usecase "Reset Password" as UC10
+
+  UC3 ..> UC7 : <<includes>>
+  UC3 ..> UC6 : <<includes>>
+  UC1 ..> UC10 : <<requires>>
+}
+
+staff --> UC1
+staff --> UC2
+staff --> UC3
+staff --> UC4
+staff --> UC5
+staff --> UC8
+staff --> UC9
+
+note right of UC7 : RandomForest\npredict_delay()
+note right of UC6 : ARIMA(2,1,2)\npredict_demand()
+@enduml
+

@@ -1,0 +1,57 @@
+
+@startuml component-diagram
+skinparam backgroundColor white
+skinparam componentBorderColor #222
+skinparam componentBackgroundColor white
+skinparam arrowColor #222
+skinparam packageBorderColor #222
+skinparam packageBackgroundColor white
+
+title Component Diagram — AC Supply Chain Analytics
+
+package "Client Layer" {
+  [Web Browser] as BROWSER
+  [Swagger UI\n/docs] as SWAGGER
+}
+
+package "FastAPI Application" {
+  [auth.router\n/auth/*] as AUTH
+  [orders.router\n/orders/*] as ORDERS
+  [inventory.router\n/inventory/*] as INV
+  [ml.router\n/ml/*] as ML_R
+  [dashboard.router\n/dashboard/*] as DASH
+  [suppliers.router\n/suppliers/*] as SUP
+  [core.auth\nJWT + bcrypt] as CORE_AUTH
+  [core.database\nSQLAlchemy ORM] as CORE_DB
+  [core.config\n.env Settings] as CONFIG
+}
+
+package "ML Service (Singleton)" {
+  [delay_model.pkl\nRandomForest] as RF
+  [arima_model.pkl\nARIMA(2,1,2)] as ARIMA
+  [anomaly_model.pkl\nIsolationForest] as ISO
+}
+
+package "PostgreSQL 17" {
+  database "ac_logistics_db" as DB
+}
+
+package "External Services" {
+  [Resend Email API] as RESEND
+  [Uvicorn ASGI\nport 8000] as UVICORN
+}
+
+BROWSER --> AUTH
+BROWSER --> ORDERS
+SWAGGER --> ML_R
+AUTH --> CORE_AUTH
+ORDERS --> CORE_DB
+INV --> CORE_DB
+ML_R --> RF
+ML_R --> ARIMA
+ML_R --> ISO
+CORE_DB --> DB
+AUTH --> RESEND
+UVICORN --> AUTH
+UVICORN --> ORDERS
+@enduml

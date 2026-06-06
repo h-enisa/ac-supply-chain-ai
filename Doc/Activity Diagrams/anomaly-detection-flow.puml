@@ -1,0 +1,36 @@
+
+@startuml activity-anomaly-detection
+skinparam backgroundColor white
+skinparam activityBorderColor #222
+skinparam activityBackgroundColor white
+skinparam arrowColor #222
+skinparam diamondBorderColor #222
+skinparam diamondBackgroundColor white
+
+title Activity Diagram — Anomaly Detection Flow
+
+|Admin|
+start
+:GET /ml/anomalies\n?last_n=200;
+
+|FastAPI|
+:Fetch last N orders\nSELECT FROM orders;
+:Build feature matrix\ndistance, weather, customs...;
+
+|ML Service|
+:IsolationForest\nscore_samples(X);
+:Classify severity\ncritical / warning;
+
+|FastAPI|
+if (Anomaly?) then (YES)
+  :Flag as ANOMALY\ntype, description, severity;
+  :INSERT INTO anomalies\ndb.commit();
+else (NO)
+  :Mark Normal\nskip;
+endif
+:Build AnomalyOut[]\n{ anomalies[], total_flagged };
+
+|Admin|
+:Receive 200 OK\nAnomaly Report;
+stop
+@enduml

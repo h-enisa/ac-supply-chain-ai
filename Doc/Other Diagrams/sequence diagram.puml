@@ -1,0 +1,44 @@
+
+@startuml sequence-diagram
+skinparam backgroundColor white
+skinparam sequenceParticipantBorderColor #222
+skinparam sequenceParticipantBackgroundColor white
+skinparam sequenceArrowColor #222
+skinparam sequenceLifeLineBorderColor #222
+
+title Sequence Diagram — Login · Order Creation · Password Reset
+
+participant "Client" as C
+participant "FastAPI\n/auth + /orders" as API
+participant "Auth\nMiddleware" as AUTH
+participant "ML Service\nRandomForest" as ML
+participant "PostgreSQL" as DB
+participant "Resend\nEmail" as EMAIL
+
+== Login Flow ==
+C -> API : POST /auth/token\n{ username, password }
+API -> AUTH : validate credentials
+AUTH -> DB : SELECT FROM users WHERE username=?
+DB --> AUTH : user record
+AUTH --> API : bcrypt.verify() → valid
+API -> DB : UPDATE last_login
+API --> C : 200 OK { access_token, role }
+
+== Order Creation ==
+C -> API : POST /orders/\nBearer token + order data
+API -> AUTH : verify JWT token
+API -> DB : SELECT branch + supplier
+DB --> API : entities found
+API -> ML : predict_delay(params)
+ML --> API : { risk_class, probability }
+API -> DB : INSERT order + order_items
+API -> DB : UPDATE inventory (deduct stock)
+API -> DB : check reorder_point alerts
+API --> C : 201 Created { order, delay_risk }
+
+== Password Reset ==
+C -> API : POST /auth/forgot-password\n{ email }
+API -> DB : INSERT reset_token (expires 1hr)
+API -> EMAIL : send reset email via Resend API
+API --> C : 200 OK { "If email exists, reset sent" }
+@enduml

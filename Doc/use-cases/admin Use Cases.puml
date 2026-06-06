@@ -1,0 +1,47 @@
+
+@startuml use-case-admin
+skinparam actorStyle awesome
+skinparam backgroundColor white
+skinparam usecaseBorderColor #222
+skinparam usecaseBackgroundColor white
+skinparam arrowColor #222
+skinparam actorBorderColor #222
+skinparam actorBackgroundColor white
+skinparam noteBorderColor #d6b656
+skinparam noteBackgroundColor #ffffcc
+
+title Admin Use Cases — AC Supply Chain Analytics
+
+left to right direction
+
+actor "Admin" as admin
+
+rectangle "AC Supply Chain System" {
+  usecase "Manage Users" as UC1
+  usecase "Detect Anomalies" as UC2
+  usecase "Run ETL Pipeline" as UC3
+  usecase "Update Order Status" as UC4
+  usecase "Manage Suppliers" as UC5
+  usecase "Price Intelligence" as UC6
+  usecase "Agent Recommendations" as UC7
+  usecase "Proactive Alerts" as UC8
+  usecase "Deactivate User" as UC9
+  usecase "Reorder Alerts" as UC10
+
+  UC1 ..> UC9 : <<requires>>
+  UC2 ..> UC6 : <<requires>>
+  UC3 ..> UC7 : <<generates>>
+  UC6 ..> UC8 : <<triggers>>
+}
+
+admin --> UC1
+admin --> UC2
+admin --> UC3
+admin --> UC4
+admin --> UC5
+admin --> UC10
+
+note right of UC6 : Beyond original scope
+note right of UC7 : Beyond original scope
+note right of UC8 : Beyond original scope
+@enduml

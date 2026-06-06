@@ -1,0 +1,46 @@
+name: Generate PlantUML SVGs
+
+on:
+  push:
+    paths:
+      - 'Doc/**/*.puml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-svgs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install Graphviz
+        run: sudo apt-get install -y graphviz
+
+      - name: Download PlantUML
+        run: |
+          wget -q https://github.com/plantuml/plantuml/releases/download/v1.2024.3/plantuml-1.2024.3.jar -O plantuml.jar
+
+      - name: Generate SVGs from all .puml files
+        run: |
+          find Doc -name "*.puml" | while read file; do
+            echo "Converting: $file"
+            java -jar plantuml.jar -tsvg "$file"
+          done
+
+      - name: Commit and push SVGs
+        run: |
+          git config user.email "github-actions@github.com"
+          git config user.name "GitHub Actions"
+          git add Doc/**/*.svg
+          git diff --cached --quiet || git commit -m "auto: generate SVGs from PlantUML [skip ci]"
+          git push

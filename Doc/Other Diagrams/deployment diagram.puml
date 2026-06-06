@@ -1,0 +1,35 @@
+
+@startuml deployment-diagram
+skinparam backgroundColor white
+skinparam nodeBorderColor #222
+skinparam nodeBackgroundColor white
+skinparam arrowColor #222
+skinparam artifactBorderColor #222
+skinparam artifactBackgroundColor white
+
+title Deployment Diagram — AC Supply Chain Analytics
+
+node "Client Machine" as CLIENT_NODE {
+  artifact "Web Browser\nHTTP REST calls" as BROWSER
+}
+
+node "Application Server\nPython 3.13 · Windows/Linux" as APP_NODE {
+  artifact "Uvicorn ASGI\nhost 0.0.0.0 port 8000" as UVICORN
+  artifact "FastAPI Application\napp/main.py" as FASTAPI
+  artifact "ML Models (in-memory)\ndelay · arima · anomaly .pkl" as ML
+  artifact ".env Configuration\nDATABASE_URL · SECRET_KEY\nRESEND_API_KEY" as ENV
+}
+
+node "Database Server\nPostgreSQL 17" as DB_NODE {
+  database "ac_logistics_db\nlocalhost:5432" as DB
+}
+
+node "External\nResend API" as EXT_NODE {
+  artifact "api.resend.com\npassword reset emails" as RESEND
+}
+
+BROWSER --> UVICORN : HTTP :8000
+FASTAPI --> DB : TCP :5432\npsycopg2
+FASTAPI --> RESEND : HTTPS\nRESEND_API_KEY
+UVICORN --> FASTAPI
+@enduml

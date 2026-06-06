@@ -100,8 +100,6 @@ def deactivate_user(user_id: int, db: Session = Depends(get_db), current_user: U
     return user
 
 
-# ── Forgot Password ───────────────────────────────────────────────────────────
-
 class ForgotPasswordRequest(BaseModel):
     email: str
 

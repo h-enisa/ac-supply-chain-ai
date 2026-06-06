@@ -3,7 +3,7 @@ name: Generate PlantUML SVGs
 on:
   push:
     paths:
-      - 'Doc/use-cases/**.puml'
+      - 'Doc/**/*.puml'
   workflow_dispatch:
 
 permissions:

@@ -61,3 +61,57 @@ class DashboardKPIs(BaseModel):
     out_of_stock_count: int
     monthly_orders: List[int]
     branch_distribution: Dict[str, int]
+
+    # =======================
+# ML SCHEMAS
+# =======================
+
+class DelayPredictRequest(BaseModel):
+    distance_km: float
+    weather_score: float
+    customs_risk: float
+    supplier_rating: float
+    lead_time_days: int
+    route: str
+
+
+class DelayPredictResponse(BaseModel):
+    risk_class: str
+    risk_probability: float
+    confidence: float
+    top_factors: Dict[str, float]
+    model_info: Dict[str, float]
+
+
+class ForecastRequest(BaseModel):
+    product_category: str
+    horizon_days: int
+
+
+class ForecastResponse(BaseModel):
+    category: str
+    horizon_days: int
+    rmse: float
+    mae: float
+    r2: float
+    model_name: str
+    forecast: List[Dict]
+
+
+class AnomalyOut(BaseModel):
+    order_ref: str
+    anomaly_score: float
+    anomaly_type: str
+    description: str
+    severity: str
+    raw_score: float
+
+
+class ETLRunResponse(BaseModel):
+    status: str
+    records_processed: int
+    null_rate: float
+    duration_seconds: float
+    train_size: int
+    test_size: int
+    log: List[str]

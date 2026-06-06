@@ -1,0 +1,34 @@
+
+@startuml activity-inventory-update
+skinparam backgroundColor white
+skinparam activityBorderColor #222
+skinparam activityBackgroundColor white
+skinparam arrowColor #222
+skinparam diamondBorderColor #222
+skinparam diamondBackgroundColor white
+
+title Activity Diagram — Inventory Update Flow
+
+|Staff|
+start
+:PATCH /inventory/{id}\n{ quantity, reorder_point };
+
+|FastAPI|
+:Fetch inventory record;
+if (Found?) then (YES)
+  :Update quantity;
+  if (qty == 0?) then (YES)
+    :status = out_of_stock;
+  elseif (qty <= reorder_point?) then (YES)
+    :status = low_stock;
+  else (NO)
+    :status = ok;
+  endif
+  :db.commit()\nReturn InventoryOut;
+else (NO)
+  :Return 404 Not Found;
+endif
+
+|Staff|
+stop
+@enduml

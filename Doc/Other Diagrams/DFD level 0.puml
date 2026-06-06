@@ -1,0 +1,28 @@
+
+@startuml dfd-level0
+skinparam backgroundColor white
+skinparam rectangleBorderColor #222
+skinparam rectangleBackgroundColor white
+skinparam arrowColor #222
+
+title DFD Level 0 — Context Diagram
+
+rectangle "Client / Frontend" as CLIENT
+rectangle "Administrator" as ADMIN
+circle "AC Supply Chain\nAnalytics System" as SYS
+database "PostgreSQL 17" as DB
+rectangle "Resend Email" as EMAIL
+rectangle "ML Models\nRF · ARIMA · IsoForest" as ML
+rectangle "AI Agent" as AGENT
+
+CLIENT --> SYS : credentials, orders,\nML requests, agent chat
+SYS --> CLIENT : KPIs, forecasts,\ndelay risk, AI alerts
+
+ADMIN --> SYS : user mgmt,\nETL trigger
+SYS --> ADMIN : reports,\nrecommendations
+
+SYS <--> DB : reads & writes\n(SQLAlchemy)
+SYS --> EMAIL : password reset emails
+SYS <--> ML : inference requests\n& predictions
+SYS <--> AGENT : queries / responses
+@enduml

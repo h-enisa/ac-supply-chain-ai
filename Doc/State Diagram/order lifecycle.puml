@@ -1,0 +1,42 @@
+
+@startuml state-diagram
+skinparam backgroundColor white
+skinparam stateBorderColor #222
+skinparam stateBackgroundColor white
+skinparam arrowColor #222
+
+title State Diagram — Order Lifecycle
+
+[*] --> PROCESSING : [order created]
+
+PROCESSING --> IN_TRANSIT : [supplier dispatches]
+PROCESSING --> CANCELLED : [admin/user cancels]
+
+IN_TRANSIT --> DELIVERED : [actual_days <= estimated_days]
+IN_TRANSIT --> DELAYED : [actual_days > estimated_days]
+IN_TRANSIT --> CANCELLED : [admin/user cancels]
+
+DELAYED --> IN_TRANSIT : [re-route]
+
+DELIVERED --> [*]
+CANCELLED --> [*]
+
+state PROCESSING {
+  [*] --> delay_risk_scored
+  delay_risk_scored : RandomForest predict_delay()
+}
+
+state "DelayRisk (ML)" as DR {
+  [*] --> LOW : [prob < 0.35]
+  LOW --> MEDIUM : [weather/customs increase]
+  MEDIUM --> HIGH : [distance/risk increase]
+}
+
+state "StockStatus" as SS {
+  [*] --> OK : [qty > reorder_point]
+  OK --> LOW_STOCK : [stock decreases]
+  LOW_STOCK --> OUT_OF_STOCK : [qty == 0]
+  OUT_OF_STOCK --> OK : [restock PATCH /inventory]
+  LOW_STOCK --> OK : [restock]
+}
+@enduml

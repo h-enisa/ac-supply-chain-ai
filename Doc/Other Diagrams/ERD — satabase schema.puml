@@ -1,0 +1,178 @@
+
+@startuml erd
+skinparam backgroundColor white
+skinparam classBorderColor #222
+skinparam classBackgroundColor white
+skinparam arrowColor #222
+
+title ERD — Database Schema — AC Supply Chain Analytics
+
+entity USERS {
+  * id : INTEGER <<PK>>
+  --
+  username : VARCHAR
+  email : VARCHAR
+  full_name : VARCHAR
+  hashed_password : VARCHAR
+  role : VARCHAR
+  is_active : BOOLEAN
+  created_at : DATETIME
+  last_login : DATETIME
+}
+
+entity PASSWORD_RESET_TOKENS {
+  * id : INTEGER <<PK>>
+  --
+  # user_id : INTEGER <<FK>>
+  token : VARCHAR
+  is_used : BOOLEAN
+  expires_at : DATETIME
+  created_at : DATETIME
+}
+
+entity BRANCHES {
+  * id : INTEGER <<PK>>
+  --
+  name : VARCHAR
+  city : VARCHAR
+  address : VARCHAR
+  phone : VARCHAR
+  is_active : BOOLEAN
+  created_at : DATETIME
+}
+
+entity SUPPLIERS {
+  * id : INTEGER <<PK>>
+  --
+  name : VARCHAR
+  country : VARCHAR
+  contact_email : VARCHAR
+  rating : FLOAT
+  on_time_rate : FLOAT
+  avg_lead_days : INTEGER
+  is_active : BOOLEAN
+  created_at : DATETIME
+}
+
+entity PRODUCTS {
+  * id : INTEGER <<PK>>
+  --
+  sku : VARCHAR
+  name : VARCHAR
+  category : VARCHAR
+  unit_price : FLOAT
+  # supplier_id : INTEGER <<FK>>
+  is_active : BOOLEAN
+  created_at : DATETIME
+}
+
+entity ORDERS {
+  * id : INTEGER <<PK>>
+  --
+  order_ref : VARCHAR
+  # branch_id : INTEGER <<FK>>
+  # supplier_id : INTEGER <<FK>>
+  origin_city : VARCHAR
+  distance_km : FLOAT
+  status : ENUM
+  delay_risk : ENUM
+  weather_score : FLOAT
+  customs_risk : FLOAT
+  total_value : FLOAT
+  estimated_days : INTEGER
+  actual_days : INTEGER
+  order_date : DATETIME
+  notes : TEXT
+}
+
+entity ORDER_ITEMS {
+  * id : INTEGER <<PK>>
+  --
+  # order_id : INTEGER <<FK>>
+  # product_id : INTEGER <<FK>>
+  quantity : INTEGER
+  unit_price : FLOAT
+}
+
+entity INVENTORY {
+  * id : INTEGER <<PK>>
+  --
+  # product_id : INTEGER <<FK>>
+  # branch_id : INTEGER <<FK>>
+  quantity : INTEGER
+  reorder_point : INTEGER
+  status : ENUM
+  last_updated : DATETIME
+}
+
+entity ANOMALIES {
+  * id : INTEGER <<PK>>
+  --
+  # order_id : INTEGER <<FK>>
+  anomaly_type : VARCHAR
+  description : TEXT
+  score : FLOAT
+  severity : VARCHAR
+  is_resolved : BOOLEAN
+  detected_at : DATETIME
+}
+
+entity DEMAND_RECORDS {
+  * id : INTEGER <<PK>>
+  --
+  # product_id : INTEGER <<FK>>
+  # branch_id : INTEGER <<FK>>
+  date : DATETIME
+  quantity : INTEGER
+  revenue : FLOAT
+}
+
+entity SEARCH_LOGS {
+  * id : INTEGER <<PK>>
+  --
+  query : VARCHAR
+  category : VARCHAR
+  results_count : INTEGER
+  had_stockout : BOOLEAN
+  searched_at : DATETIME
+}
+
+entity COMPETITOR_PRICES {
+  * id : INTEGER <<PK>>
+  --
+  # product_id : INTEGER <<FK>>
+  competitor_name : VARCHAR
+  competitor_price : FLOAT
+  our_price : FLOAT
+  price_diff_pct : FLOAT
+  scraped_at : DATETIME
+}
+
+entity AGENT_RECOMMENDATIONS {
+  * id : INTEGER <<PK>>
+  --
+  type : VARCHAR
+  # product_id : INTEGER <<FK>>
+  title : VARCHAR
+  description : TEXT
+  priority : VARCHAR
+  estimated_value : FLOAT
+  is_approved : BOOLEAN
+  is_dismissed : BOOLEAN
+  created_at : DATETIME
+}
+
+USERS ||--o{ PASSWORD_RESET_TOKENS : has
+BRANCHES ||--o{ ORDERS : receives
+BRANCHES ||--o{ INVENTORY : holds
+BRANCHES ||--o{ DEMAND_RECORDS : tracks
+SUPPLIERS ||--o{ ORDERS : fulfills
+SUPPLIERS ||--o{ PRODUCTS : provides
+PRODUCTS ||--o{ ORDER_ITEMS : "included in"
+PRODUCTS ||--o{ INVENTORY : "stocked as"
+PRODUCTS ||--o{ DEMAND_RECORDS : "tracked by"
+PRODUCTS ||--o{ COMPETITOR_PRICES : "compared in"
+PRODUCTS ||--o{ AGENT_RECOMMENDATIONS : "targeted by"
+ORDERS ||--o{ ORDER_ITEMS : contains
+ORDERS ||--o{ ANOMALIES : "flagged by"
+@enduml

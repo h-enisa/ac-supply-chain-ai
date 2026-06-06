@@ -32,7 +32,7 @@ jobs:
 
       - name: Generate SVGs from all .puml files
         run: |
-          find Doc/use-cases -name "*.puml" | while read file; do
+          find Doc -name "*.puml" | while read file; do
             echo "Converting: $file"
             java -jar plantuml.jar -tsvg "$file"
           done
@@ -41,6 +41,6 @@ jobs:
         run: |
           git config user.email "github-actions@github.com"
           git config user.name "GitHub Actions"
-          git add Doc/use-cases/*.svg
+          git add Doc/**/*.svg
           git diff --cached --quiet || git commit -m "auto: generate SVGs from PlantUML [skip ci]"
           git push

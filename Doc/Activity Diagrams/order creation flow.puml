@@ -1,0 +1,33 @@
+
+@startuml activity-order-creation
+skinparam backgroundColor white
+skinparam activityBorderColor #222
+skinparam activityBackgroundColor white
+skinparam arrowColor #222
+skinparam diamondBorderColor #222
+skinparam diamondBackgroundColor white
+
+title Activity Diagram — Order Creation Flow
+
+|Staff|
+start
+:Fill Order Form\n(branch, supplier, items);
+:Submit POST /orders/;
+
+|FastAPI|
+:Validate JWT Token\ncheck role permissions;
+if (Valid?) then (YES)
+  :Verify Branch & Supplier\nDB lookup;
+  :predict_delay()\nRandomForest → risk_class;
+  :Generate order_ref\nORD-{uuid8};
+  :INSERT order + items\ndb.commit();
+  :UPDATE inventory\ndeduct stock;
+else (NO)
+  :Return 401 Unauthorized;
+  stop
+endif
+
+|Staff|
+:Receive 201 Created\n{ order, delay_risk };
+stop
+@enduml

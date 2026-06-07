@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1536, initial-scale=1.0" />
+  <title>American Computers Albania — Supply Chain AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:#1A2B6B; --navy-dk:#121E4F; --navy-lt:#EEF1FB; --navy-mid:#C7D0F0;
+      --red:#DC1F26; --red-dk:#B91219; --red-lt:#FDECED;
+      --green:#16A34A; --green-lt:#DCFCE7;
+      --amber:#D97706; --amber-lt:#FEF3C7;
+      --blue:#2563EB; --blue-lt:#DBEAFE;
+      --bg:#F4F5F9; --surf:#FFFFFF; --surf2:#F8F9FC;
+      --border:rgba(26,43,107,0.08); --border2:rgba(26,43,107,0.16);
+      --text:#111827; --muted:#6B7280; --hint:#9CA3AF;
+      --shadow:0 1px 3px rgba(26,43,107,0.08),0 4px 16px rgba(26,43,107,0.06);
+      --shadow-sm:0 1px 2px rgba(26,43,107,0.06);
+      --r:16px; --rm:12px; --rs:8px;
+      --mono:'DM Mono',monospace;
+    }
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;}
+    .app{display:flex;height:100vh;width:100vw;overflow:hidden;}
+    .sidebar{width:220px;min-width:220px;flex-shrink:0;background:var(--surf);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;padding-bottom:16px;}
+    .brand{padding:18px 18px 14px;border-bottom:1px solid var(--border);}
+    .brand-row{display:flex;align-items:center;gap:10px;}
+    .brand-name{font-size:13px;font-weight:700;color:var(--navy);letter-spacing:-0.2px;line-height:1.2;}
+    .brand-sub{font-size:9.5px;color:var(--muted);margin-top:1px;}
+    .api-status{display:flex;align-items:center;gap:6px;padding:7px 18px;font-size:10px;color:var(--muted);border-bottom:1px solid var(--border);}
+    .api-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+    .api-dot.online{background:var(--green);}.api-dot.offline{background:var(--red);}.api-dot.checking{background:var(--amber);}
+    .user-area{padding:11px 18px;border-bottom:1px solid var(--border);}
+    .user-name{font-size:12px;font-weight:600;color:var(--navy);}
+    .user-role-badge{display:inline-flex;align-items:center;font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;margin-top:3px;background:var(--navy-lt);color:var(--navy);text-transform:uppercase;letter-spacing:.04em;}
+    .sign-out-btn{margin-top:7px;width:100%;font-size:11px;font-family:inherit;padding:5px 8px;border-radius:var(--rs);border:1px solid var(--border2);background:none;color:var(--muted);cursor:pointer;transition:all .12s;}
+    .sign-out-btn:hover{background:var(--surf2);color:var(--navy);}
+    .nav-group{padding:10px 10px 4px;}
+    .nav-lbl{font-size:8.5px;font-weight:700;color:var(--hint);text-transform:uppercase;letter-spacing:.12em;padding:0 8px;margin-bottom:4px;}
+    .nav-btn{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:var(--rs);font-size:12.5px;font-weight:500;color:var(--muted);cursor:pointer;border:none;background:none;width:100%;text-align:left;transition:all .12s;}
+    .nav-btn:hover{background:var(--navy-lt);color:var(--navy);}
+    .nav-btn.on{background:var(--navy);color:#fff;font-weight:600;}
+    .nav-ic{width:14px;height:14px;flex-shrink:0;opacity:.7;}
+    .nav-btn.on .nav-ic{opacity:1;filter:brightness(10);}
+    .main{flex:1;min-width:0;overflow-y:auto;background:var(--bg);}
+    .topbar{background:var(--surf);border-bottom:1px solid var(--border);padding:13px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;}
+    .tb-l h1{font-size:15px;font-weight:700;letter-spacing:-0.3px;color:var(--navy);}
+    .tb-l p{font-size:11px;color:var(--muted);margin-top:1px;}
+    .tb-r{display:flex;align-items:center;gap:8px;}
+    .content{padding:18px 24px;}
+    .sec{display:none;}.sec.on{display:block;}
+    .card{background:var(--surf);border:1px solid var(--border);border-radius:var(--r);padding:18px;box-shadow:var(--shadow-sm);}
+    .ctitle{font-size:13px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;color:var(--navy);letter-spacing:-0.2px;}
+    .ctitle span{font-size:10.5px;color:var(--muted);font-weight:400;}
+    .kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px;}
+    .kpi-card{background:var(--surf);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px 14px;box-shadow:var(--shadow-sm);}
+    .kpi-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px;}
+    .kpi-value{font-size:26px;font-weight:700;letter-spacing:-1px;line-height:1;color:var(--navy);margin-bottom:5px;font-family:var(--mono);}
+    .kpi-trend{display:flex;align-items:center;gap:4px;font-size:10px;font-weight:600;}
+    .kpi-trend.up{color:var(--green);}.kpi-trend.down{color:var(--red);}
+    .kpi-sparkline{margin-top:10px;}
+    .r2{display:grid;grid-template-columns:1fr 340px;gap:14px;margin-bottom:14px;}
+    .r2b{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+    .r3{display:grid;grid-template-columns:1fr 2fr;gap:14px;margin-bottom:14px;}
+    .badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;display:inline-flex;align-items:center;gap:4px;text-transform:uppercase;letter-spacing:.04em;}
+    .b-green{background:var(--green-lt);color:var(--green);}.b-navy{background:var(--navy-lt);color:var(--navy);}.b-red{background:var(--red-lt);color:var(--red);}.b-blue{background:var(--blue-lt);color:var(--blue);}.b-amber{background:var(--amber-lt);color:var(--amber);}
+    .dot{width:6px;height:6px;border-radius:50%;display:inline-block;}.d-g{background:var(--green);}.d-r{background:var(--red);}.d-n{background:var(--navy);}
+    .tbl{width:100%;border-collapse:collapse;font-size:12.5px;}
+    .tbl th{font-size:9.5px;font-weight:700;color:var(--hint);text-transform:uppercase;letter-spacing:.08em;padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;background:var(--surf);position:sticky;top:0;}
+    .tbl td{padding:10px 12px;border-bottom:1px solid var(--border);}
+    .tbl tr:last-child td{border:none;}.tbl tr:hover td{background:var(--surf2);}
+    .tbl-wrap{overflow-x:auto;border-radius:var(--r);border:1px solid var(--border);background:var(--surf);box-shadow:var(--shadow-sm);}
+    .fg{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;}
+    .flbl{font-size:10.5px;font-weight:600;color:var(--muted);}
+    .finp{font-family:inherit;font-size:13px;padding:8px 11px;border-radius:var(--rm);border:1.5px solid var(--border2);background:var(--surf);color:var(--text);outline:none;width:100%;transition:border-color .12s;}
+    .finp:focus{border-color:var(--navy);box-shadow:0 0 0 3px var(--navy-lt);}
+    .fr2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .sl-row{display:flex;align-items:center;gap:10px;margin-bottom:9px;}
+    .sl-row label{font-size:10.5px;color:var(--muted);width:130px;font-weight:600;}
+    .sl-row input[type=range]{flex:1;accent-color:var(--navy);}
+    .sl-row .sv{font-size:11.5px;font-weight:700;font-family:var(--mono);width:48px;text-align:right;color:var(--navy);}
+    .btn{font-family:inherit;font-size:12.5px;font-weight:600;padding:8px 16px;border-radius:var(--rm);border:1.5px solid var(--border2);background:var(--surf);color:var(--text);cursor:pointer;transition:all .12s;}
+    .btn:hover{background:var(--surf2);}.btn:disabled{opacity:.5;cursor:not-allowed;}
+    .btn-p{background:var(--navy);color:#fff;border-color:var(--navy);}
+    .btn-p:hover{background:var(--navy-dk);border-color:var(--navy-dk);}
+    .btn-r{background:var(--red);color:#fff;border-color:var(--red);}
+    .btn-r:hover{background:var(--red-dk);}
+    .alert-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
+    .alert-item:last-child{border:none;}
+    .alert-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+    .alert-item p{font-size:12px;line-height:1.4;}
+    .alert-item span{font-size:10px;color:var(--hint);margin-top:2px;display:block;}
+    .pred{background:var(--surf2);border-radius:var(--rm);padding:12px 14px;font-family:var(--mono);font-size:11.5px;margin-top:10px;border-left:3px solid var(--navy);line-height:2;}
+    .kgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+    .kpi-mini{background:var(--surf2);border-radius:var(--rm);padding:10px 12px;}
+    .kpi-mini-l{font-size:9px;color:var(--hint);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
+    .kpi-mini-v{font-size:16px;font-weight:700;font-family:var(--mono);color:var(--navy);}
+    .pbr{height:5px;background:var(--surf2);border-radius:3px;overflow:hidden;margin-top:5px;}
+    .pbf{height:100%;border-radius:3px;transition:width .6s ease;}
+    .log-wrap{max-height:200px;overflow-y:auto;background:#0F172A;border-radius:var(--rm);padding:10px 12px;}
+    .log-line{font-family:var(--mono);font-size:10.5px;padding:2px 0;border-bottom:1px solid rgba(255,255,255,0.06);color:#94A3B8;}
+    .log-line .ts{color:#475569;margin-right:6px;}.log-line .ok{color:#4ADE80;}.log-line .er{color:#F87171;}.log-line .in{color:#60A5FA;}
+    .etl-s{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surf2);border-radius:var(--rm);margin-bottom:7px;}
+    .etl-ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+    .etl-n{font-size:12px;font-weight:600;color:var(--navy);}.etl-d{font-size:10px;color:var(--hint);font-family:var(--mono);}
+    .spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--border2);border-top-color:var(--navy);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    .err-box{background:var(--red-lt);border:1px solid var(--red);border-radius:var(--rm);padding:10px 12px;font-size:12px;color:var(--red);margin:12px 0;}
+    .status-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;}
+    .anm-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+    .anm-item:last-child{border:none;}
+    .anm-score{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;font-family:var(--mono);flex-shrink:0;}
+    .anm-score.critical{background:var(--red-lt);color:var(--red);}.anm-score.warning{background:var(--amber-lt);color:var(--amber);}
+    .anm-ref{font-size:12.5px;font-weight:700;color:var(--navy);}
+    .anm-type{font-size:11px;color:var(--red);font-weight:600;}
+    .anm-desc{font-size:10.5px;color:var(--muted);margin-top:1px;}
+    .anm-raw{font-size:10px;color:var(--hint);font-family:var(--mono);}
+    .sup-item{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);}
+    .sup-item:last-child{border:none;}.sup-name{font-size:12.5px;font-weight:600;color:var(--navy);}.sup-meta{font-size:10.5px;color:var(--muted);}
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-row">
+        <img src="logo.png" style="width:36px;height:36px;object-fit:contain;">
+        <div>
+          <div class="brand-name">American Computers</div>
+          <div class="brand-sub">Albania · Est. 2004</div>
+        </div>
+      </div>
+    </div>
+    <div class="api-status"><span class="api-dot checking" id="apiDot"></span><span id="apiLabel">Connecting...</span></div>
+    <div class="user-area">
+      <div class="user-name" id="user-info">User</div>
+      <div><span class="user-role-badge" id="user-role">viewer</span></div>
+      <button class="sign-out-btn" onclick="logout()">Sign out</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-lbl">Overview</div>
+      <button class="nav-btn on" onclick="nav('dashboard',this)">
+        <svg class="nav-ic" viewBox="0 0 15 15" fill="none"><rect x="1" y="1" width="5.5" height="5.5" rx="1.2" fill="currentColor"/><rect x="8.5" y="1" width="5.5" height="5.5" rx="1.2" fill="currentColor" opacity=".4"/><rect x="1" y="8.5" width="5.5" height="5.5" rx="1.2" fill="currentColor" opacity=".4"/><rect x="8.5" y="8.5" width="5.5" height="5.5" rx="1.2" fill="currentColor" opacity=".2"/></svg>
+        Dashboard
+      </button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-lbl">Data</div>
+      <button class="nav-btn" onclick="nav('inventory',this)">
+        <svg class="nav-ic" viewBox="0 0 15 15" fill="none"><ellipse cx="7.5" cy="3.8" rx="5.5" ry="2" stroke="currentColor" stroke-width="1.2"/><path d="M2 3.8v3.7c0 1.1 2.5 2 5.5 2s5.5-.9 5.5-2V3.8M2 7.5v3.7c0 1.1 2.5 2 5.5 2s5.5-.9 5.5-2V7.5" stroke="currentColor" stroke-width="1.2"/></svg>
+        Inventory
+      </button>
+      <button class="nav-btn" onclick="nav('orders',this)">
+        <svg class="nav-ic" viewBox="0 0 15 15" fill="none"><rect x="2" y="2" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M4.5 5.5h6M4.5 8h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Orders
+      </button>
+      <button class="nav-btn" onclick="nav('suppliers',this)">
+        <svg class="nav-ic" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M7.5 4.5v3l2.5 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Suppliers
+      </button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-lbl">AI Modules</div>
+      <button class="nav-btn" onclick="nav('forecast',this)">
+        <svg class="nav-ic" viewBox="0 0 15 15" fill="none"><path d="M2 10.5L5.5 7l3 2.5L12 5l2-2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Demand Forecast
+      </button>
+      <button class="nav-btn" onclick="nav('delay',this)">
+        <svg class="nav-ic" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M7.5 4.5V7.5l2 2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Delay Prediction
+      </button>
+      <button class="nav-btn" onclick="nav('anomaly',this)">
+        <svg class="nav-ic" viewBox="0 0 15 15" fill="none"><path d="M7.5 2L1.5 12h12L7.5 2z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M7.5 6.5V9M7.5 10.5v.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Anomaly Detection
+      </button>
+      <button class="nav-btn" onclick="nav('routing',this)">
+        <svg class="nav-ic" viewBox="0 0 15 15" fill="none"><circle cx="3" cy="12" r="1.8" stroke="currentColor" stroke-width="1.2"/><circle cx="12" cy="3" r="1.8" stroke="currentColor" stroke-width="1.2"/><path d="M4.8 12h3a2 2 0 002-2V6a2 2 0 012-2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Route Optimizer
+      </button>
+      <button class="nav-btn" onclick="nav('reorder',this)">
+        <svg class="nav-ic" viewBox="0 0 15 15" fill="none"><path d="M7.5 2v11M2 7.5h11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="7.5" cy="7.5" r="5.5" stroke="currentColor" stroke-width="1.2"/></svg>
+        Reorder Alerts
+      </button>
+      <button class="nav-btn" onclick="nav('agent',this)">
+        <svg class="nav-ic" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 7.5h5M7.5 5v5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        AI Agent
+      </button>
+    </div>
+    <div class="nav-group" id="system-nav-group" style="display:none">
+      <div class="nav-lbl">System</div>
+      <button class="nav-btn" id="nav-etl-btn" onclick="nav('etl',this)">
+        <svg class="nav-ic" viewBox="0 0 15 15" fill="none"><path d="M2 3.5h11M2 7.5h8M2 11.5h5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="12" cy="11.5" r="2.2" fill="currentColor" opacity=".7"/></svg>
+        ETL Pipeline
+      </button>
+      <button class="nav-btn" id="nav-users-btn" onclick="nav('users',this)">
+        <svg class="nav-ic" viewBox="0 0 15 15" fill="none"><circle cx="5.5" cy="4.5" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 12c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="11.5" cy="4.5" r="1.5" stroke="currentColor" stroke-width="1.2"/></svg>
+        User Management
+      </button>
+    </div>
+  </aside>
+
+  <div class="main">
+
+    <div class="sec on" id="sec-dashboard">
+      <div class="topbar">
+        <div class="tb-l"><h1>Dashboard</h1><p>Real-time overview of your supply chain operations</p></div>
+        <div class="tb-r"><span class="status-pill b-green" id="sysStatus"><span class="dot d-g"></span>System Online</span><button class="btn" onclick="loadDashboard()">↻ Refresh</button></div>
+      </div>
+      <div class="content">
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-label">Active Orders</div><div class="kpi-value" id="m-orders">—</div><div class="kpi-trend up">↑ vs last 7 days</div><div class="kpi-sparkline"><canvas id="sp-orders" height="40"></canvas></div></div>
+          <div class="kpi-card"><div class="kpi-label">On-Time Delivery</div><div class="kpi-value" id="m-otd">—</div><div class="kpi-trend up">↑ vs 90% target</div><div class="kpi-sparkline"><canvas id="sp-otd" height="40"></canvas></div></div>
+          <div class="kpi-card"><div class="kpi-label">Inventory Value (€)</div><div class="kpi-value" id="m-inv">—</div><div class="kpi-trend up">↑ all branches</div><div class="kpi-sparkline"><canvas id="sp-inv" height="40"></canvas></div></div>
+          <div class="kpi-card"><div class="kpi-label">Avg Delivery Days</div><div class="kpi-value" id="m-days">—</div><div class="kpi-trend down">vs 5 day target</div><div class="kpi-sparkline"><canvas id="sp-days" height="40"></canvas></div></div>
+          <div class="kpi-card"><div class="kpi-label">Total SKUs</div><div class="kpi-value" id="m-skus">—</div><div class="kpi-trend up">↑ in catalogue</div><div class="kpi-sparkline"><canvas id="sp-skus" height="40"></canvas></div></div>
+        </div>
+        <div class="r2">
+          <div class="card"><div class="ctitle">Monthly Order Volume — 2025/2026 <span>from database</span></div><div style="position:relative;height:200px"><canvas id="ch-orders"></canvas></div></div>
+          <div class="card"><div class="ctitle">Live Alerts</div><div id="alertList" style="padding-top:4px"><div style="color:var(--hint);font-size:12px">Loading...</div></div></div>
+        </div>
+        <div class="r2b">
+          <div class="card"><div class="ctitle">KPI Performance vs Targets</div><div id="kpiRows"><div style="color:var(--hint);font-size:12px">Loading...</div></div></div>
+          <div class="card"><div class="ctitle">Sales by Branch</div><div style="position:relative;height:190px"><canvas id="ch-branch"></canvas></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec" id="sec-inventory">
+      <div class="topbar"><div class="tb-l"><h1>Inventory</h1><p>Stock levels across all Albanian branches</p></div><div class="tb-r"><input class="finp" id="inv-q" placeholder="Search SKU or product…" oninput="filterTable('inv-body',this.value)" style="width:200px"><span class="badge b-navy" id="inv-count">Loading...</span></div></div>
+      <div class="content">
+        <div class="kgrid"><div class="kpi-mini"><div class="kpi-mini-l">Total SKUs</div><div class="kpi-mini-v" id="kpi-skus">—</div></div><div class="kpi-mini"><div class="kpi-mini-l">Low Stock</div><div class="kpi-mini-v" style="color:var(--amber)" id="kpi-low">—</div></div><div class="kpi-mini"><div class="kpi-mini-l">Out of Stock</div><div class="kpi-mini-v" style="color:var(--red)" id="kpi-out">—</div></div></div>
+        <div class="tbl-wrap"><table class="tbl"><thead><tr><th>SKU</th><th>Product</th><th>Category</th><th>Stock</th><th>Reorder Point</th><th>Status</th></tr></thead><tbody id="inv-body"><tr><td colspan="6" style="padding:24px;color:var(--hint);text-align:center"><span class="spinner"></span>Loading...</td></tr></tbody></table></div>
+      </div>
+    </div>
+
+    <div class="sec" id="sec-orders">
+      <div class="topbar"><div class="tb-l"><h1>Orders</h1><p>All import orders — live from database</p></div><div class="tb-r"><select class="finp" id="ord-status-filter" onchange="loadOrders()" style="width:160px"><option value="">All statuses</option><option value="processing">Processing</option><option value="in_transit">In Transit</option><option value="delivered">Delivered</option><option value="delayed">Delayed</option></select><span class="badge b-navy" id="ord-count">Loading...</span></div></div>
+      <div class="content"><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Order Ref</th><th>Origin</th><th>Branch</th><th>Value (€)</th><th>Est. Days</th><th>Ordered</th><th>Status</th><th>Delay Risk</th></tr></thead><tbody id="ord-body"><tr><td colspan="8" style="padding:24px;color:var(--hint);text-align:center"><span class="spinner"></span>Loading...</td></tr></tbody></table></div></div>
+    </div>
+
+    <div class="sec" id="sec-suppliers">
+      <div class="topbar"><div class="tb-l"><h1>Suppliers</h1><p>EU import partners</p></div><div class="tb-r"><span class="badge b-navy" id="sup-count">Loading...</span></div></div>
+      <div class="content">
+        <div class="r2b"><div class="card"><div class="ctitle">On-Time Delivery Rate <span>by supplier</span></div><div style="position:relative;height:230px"><canvas id="ch-sup"></canvas></div></div><div class="card"><div class="ctitle">Supplier Directory</div><div id="sup-list"><div style="color:var(--hint);font-size:12px">Loading...</div></div></div></div>
+        <div class="card"><div class="ctitle">Average Lead Time <span>days</span></div><div style="position:relative;height:160px"><canvas id="ch-lead"></canvas></div></div>
+      </div>
+    </div>
+
+    <div class="sec" id="sec-forecast">
+      <div class="topbar"><div class="tb-l"><h1>Demand Forecasting</h1><p>ARIMA(2,1,2) — per category live prediction</p></div><div class="tb-r"><span class="badge b-navy">POST /api/v1/ml/forecast</span></div></div>
+      <div class="content">
+        <div class="r2b">
+          <div class="card">
+            <div class="ctitle">Forecast Parameters</div>
+            <div class="fg"><label class="flbl">Product category</label><select class="finp" id="fc-cat"><option>Laptops</option><option>Desktops</option><option>Monitors</option><option>Smartphones</option><option>Accessories</option><option>Gaming</option><option>Tablets</option><option>Storage</option></select></div>
+            <div class="sl-row"><label>Horizon (days)</label><input type="range" min="7" max="90" value="30" step="1" id="sl-h" oninput="document.getElementById('v-h').textContent=this.value"><span class="sv" id="v-h">30</span></div>
+            <button class="btn btn-p" id="fc-btn" onclick="runForecast()" style="width:100%;margin-top:6px">Run Forecast</button>
+            <div class="pred" id="fc-out" style="margin-top:12px">Configure parameters and click Run Forecast.</div>
+          </div>
+          <div class="card"><div class="ctitle">Model Performance — RMSE Comparison</div><div style="position:relative;height:210px"><canvas id="ch-models"></canvas></div></div>
+        </div>
+        <div class="card"><div class="ctitle">Demand Forecast <span id="fc-title">— configure above and run</span></div><div style="position:relative;height:230px"><canvas id="ch-fc"></canvas></div></div>
+      </div>
+    </div>
+
+    <div class="sec" id="sec-delay">
+      <div class="topbar"><div class="tb-l"><h1>Delay Prediction</h1><p>Random Forest Classifier — live from ML model</p></div><div class="tb-r"><span class="badge b-navy">POST /api/v1/ml/delay/predict</span></div></div>
+      <div class="content">
+        <div class="r2b">
+          <div class="card">
+            <div class="ctitle">Shipment Inputs</div>
+            <div class="fr2">
+              <div class="fg"><label class="flbl">Route</label><select class="finp" id="d-route"><option>Italy → Durrës (sea)</option><option>Germany → Tirana (road)</option><option>China → Tirana (air)</option><option>Turkey → Tirana (road)</option><option>Greece → Tirana (road)</option></select></div>
+              <div class="fg"><label class="flbl">Distance (km)</label><input class="finp" type="number" value="860" id="d-dist"></div>
+              <div class="fg"><label class="flbl">Weather score (0–10)</label><input class="finp" type="number" min="0" max="10" step="0.1" value="3.0" id="d-wx"></div>
+              <div class="fg"><label class="flbl">Customs risk (0–10)</label><input class="finp" type="number" min="0" max="10" step="0.1" value="4.0" id="d-cust"></div>
+              <div class="fg"><label class="flbl">Supplier rating (1–5)</label><input class="finp" type="number" min="1" max="5" step="0.1" value="4.1" id="d-sup"></div>
+              <div class="fg"><label class="flbl">Lead time (days)</label><input class="finp" type="number" min="1" value="6" id="d-lead"></div>
+            </div>
+            <button class="btn btn-p" id="delay-btn" onclick="runDelay()" style="width:100%;margin-top:6px">Run Classifier</button>
+            <div class="pred" id="delay-out" style="margin-top:12px">Configure inputs and click Run Classifier.</div>
+          </div>
+          <div class="card">
+            <div class="ctitle">Feature Importance</div>
+            <div style="position:relative;height:200px"><canvas id="ch-feat"></canvas></div>
+            <div class="kgrid" style="margin-top:14px"><div class="kpi-mini"><div class="kpi-mini-l">Accuracy</div><div class="kpi-mini-v" id="d-acc">—</div></div><div class="kpi-mini"><div class="kpi-mini-l">Precision</div><div class="kpi-mini-v" id="d-prec">—</div></div><div class="kpi-mini"><div class="kpi-mini-l">Recall</div><div class="kpi-mini-v" id="d-rec">—</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec" id="sec-anomaly">
+      <div class="topbar"><div class="tb-l"><h1>Anomaly Detection</h1><p>Rule-based detection — scanning orders from database</p></div><div class="tb-r"><span class="badge b-amber" id="anm-count">Loading...</span><button class="btn" onclick="loadAnomalies()">↻ Re-scan</button></div></div>
+      <div class="content">
+        <div class="r2b"><div class="card"><div class="ctitle">Detected Anomalies <span>GET /api/v1/ml/anomalies</span></div><div id="anm-list"><div style="color:var(--hint);font-size:12px;padding:8px"><span class="spinner"></span>Scanning...</div></div></div><div class="card"><div class="ctitle">Score Distribution</div><div style="position:relative;height:230px"><canvas id="ch-anm"></canvas></div></div></div>
+        <div class="card"><div class="sl-row"><label>Orders to scan</label><input type="range" min="50" max="500" value="200" step="10" id="sl-scan" oninput="document.getElementById('v-scan').textContent=this.value"><span class="sv" id="v-scan">200</span></div><button class="btn btn-p" onclick="loadAnomalies()" style="margin-top:4px">Re-scan with new parameters</button></div>
+      </div>
+    </div>
+
+    <div class="sec" id="sec-routing">
+      <div class="topbar"><div class="tb-l"><h1>Route Optimizer</h1><p>Greedy heuristic — Albanian branch delivery network</p></div><div class="tb-r"><button class="btn btn-p" onclick="runRouting()">Optimize Routes</button></div></div>
+      <div class="content">
+        <div class="r3">
+          <div class="card">
+            <div class="ctitle">Configuration</div>
+            <div class="fg"><label class="flbl">Objective</label><select class="finp" id="rt-obj"><option value="time">Minimize time</option><option value="cost">Minimize cost</option><option value="balanced">Balanced</option></select></div>
+            <div class="sl-row" style="flex-direction:column;align-items:flex-start;gap:5px"><label>Max vehicles</label><div style="display:flex;width:100%;gap:8px;align-items:center"><input type="range" min="2" max="8" value="8" step="1" id="sl-v" oninput="document.getElementById('v-v').textContent=this.value" style="flex:1"><span class="sv" id="v-v">8</span></div></div>
+            <button class="btn btn-p" onclick="runRouting()" style="width:100%;margin-top:6px">Run Optimizer</button>
+            <div style="margin-top:10px;font-size:11.5px;color:var(--muted)" id="rt-saving"></div>
+          </div>
+          <div class="card" style="grid-column:span 2"><div class="ctitle">Optimized Routes <span id="rt-sub">POST /api/v1/ml/routes/optimize</span></div><div class="tbl-wrap" style="border:none;box-shadow:none"><table class="tbl"><thead><tr><th>Route</th><th>Distance</th><th>Cost (€)</th><th>Time (h)</th><th>Saving</th><th>Status</th></tr></thead><tbody id="route-body"><tr><td colspan="6" style="padding:20px;color:var(--hint);text-align:center">Click "Optimize Routes" to run</td></tr></tbody></table></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec" id="sec-reorder">
+      <div class="topbar"><div class="tb-l"><h1>Reorder Alerts</h1><p>AI-powered stock replenishment recommendations</p></div><div class="tb-r"><span class="badge b-red" id="reorder-critical">— Critical</span><span class="badge b-amber" id="reorder-warning">— Warning</span><button class="btn" onclick="loadReorder()">↻ Refresh</button></div></div>
+      <div class="content">
+        <div class="kgrid" style="grid-template-columns:repeat(3,1fr);margin-bottom:18px;">
+          <div class="kpi-mini"><div class="kpi-mini-l">Total Alerts</div><div class="kpi-mini-v" id="reorder-total">—</div></div>
+          <div class="kpi-mini"><div class="kpi-mini-l">Critical</div><div class="kpi-mini-v" style="color:var(--red)" id="reorder-crit-count">—</div></div>
+          <div class="kpi-mini"><div class="kpi-mini-l">Warning</div><div class="kpi-mini-v" style="color:var(--amber)" id="reorder-warn-count">—</div></div>
+        </div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr><th>SKU</th><th>Product</th><th>Category</th><th>Current Stock</th><th>Reorder Point</th><th>Days to Stockout</th><th>Suggested Order</th><th>Branches</th><th>Urgency</th></tr></thead>
+            <tbody id="reorder-body"><tr><td colspan="9" style="padding:24px;color:var(--hint);text-align:center"><span class="spinner"></span>Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec" id="sec-agent">
+      <div class="topbar">
+        <div class="tb-l"><h1>AI Agent</h1><p>Autonomous recommendations — reorder, reprice, promote</p></div>
+        <div class="tb-r"><span class="badge b-navy" id="agent-total">Loading...</span><button class="btn btn-p" onclick="loadAgent()">↻ Refresh</button></div>
+      </div>
+      <div class="content">
+        <div class="kgrid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
+          <div class="kpi-mini"><div class="kpi-mini-l">Total Actions</div><div class="kpi-mini-v" id="ag-total">—</div></div>
+          <div class="kpi-mini"><div class="kpi-mini-l">Reorder</div><div class="kpi-mini-v" style="color:var(--red)" id="ag-reorder">—</div></div>
+          <div class="kpi-mini"><div class="kpi-mini-l">Reprice</div><div class="kpi-mini-v" style="color:var(--amber)" id="ag-reprice">—</div></div>
+          <div class="kpi-mini"><div class="kpi-mini-l">Promote</div><div class="kpi-mini-v" style="color:var(--green)" id="ag-promote">—</div></div>
+        </div>
+        <div style="display:flex;gap:4px;background:var(--surf2);padding:4px;border-radius:var(--rm);width:fit-content;margin-bottom:18px;border:1px solid var(--border)">
+          <button class="btn" id="tab-all"     onclick="agentTab('all')"     style="font-size:11.5px;padding:6px 14px;background:var(--navy);color:#fff;border-color:var(--navy)">All</button>
+          <button class="btn" id="tab-reorder" onclick="agentTab('reorder')" style="font-size:11.5px;padding:6px 14px">Reorder</button>
+          <button class="btn" id="tab-reprice" onclick="agentTab('reprice')" style="font-size:11.5px;padding:6px 14px">Reprice</button>
+          <button class="btn" id="tab-promote" onclick="agentTab('promote')" style="font-size:11.5px;padding:6px 14px">Promote</button>
+          <button class="btn" id="tab-gaps"    onclick="agentTab('gaps')"    style="font-size:11.5px;padding:6px 14px">Demand Gaps</button>
+          <button class="btn" id="tab-prices"  onclick="agentTab('prices')"  style="font-size:11.5px;padding:6px 14px">Price Intel</button>
+        </div>
+        <div id="agent-recs"></div>
+        <div id="agent-gaps" style="display:none">
+          <div class="card" style="margin-bottom:14px">
+            <div class="ctitle">Customer Demand Gaps <span>Products searched but not found in stock</span></div>
+            <div class="tbl-wrap" style="border:none;box-shadow:none">
+              <table class="tbl">
+                <thead><tr><th>Search Query</th><th>Category</th><th>Searches (7d)</th><th>Est. Lost Revenue</th><th>Matching Products</th></tr></thead>
+                <tbody id="gaps-body"><tr><td colspan="5" style="padding:20px;text-align:center;color:var(--hint)"><span class="spinner"></span>Loading...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div id="agent-prices" style="display:none">
+          <div class="kgrid" style="grid-template-columns:repeat(3,1fr);margin-bottom:14px">
+            <div class="kpi-mini"><div class="kpi-mini-l">Overpriced</div><div class="kpi-mini-v" style="color:var(--red)" id="pi-over">—</div></div>
+            <div class="kpi-mini"><div class="kpi-mini-l">Price Advantage</div><div class="kpi-mini-v" style="color:var(--green)" id="pi-adv">—</div></div>
+            <div class="kpi-mini"><div class="kpi-mini-l">Competitive</div><div class="kpi-mini-v" id="pi-comp">—</div></div>
+          </div>
+          <div class="tbl-wrap">
+            <table class="tbl">
+              <thead><tr><th>Product</th><th>Category</th><th>Our Price</th><th>Competitor</th><th>Competitor Price</th><th>Difference</th><th>Status</th></tr></thead>
+              <tbody id="prices-body"><tr><td colspan="7" style="padding:20px;text-align:center;color:var(--hint)"><span class="spinner"></span>Loading...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px;margin-bottom:14px">
+          <div class="ctitle">Agent Memory <span>Your recent approvals and dismissals</span></div>
+          <div id="agent-memory"><div style="font-size:12px;color:var(--hint)">No actions recorded yet — approve or dismiss recommendations to build history.</div></div>
+        </div>
+        <div class="card" style="margin-bottom:14px">
+          <div class="ctitle">Agent Chat <span>Ask anything about your supply chain</span></div>
+          <div id="chat-history" style="height:280px;overflow-y:auto;padding:8px;background:var(--surf2);border-radius:var(--rm);border:1px solid var(--border);margin-bottom:12px">
+            <div style="display:flex;gap:8px;margin-bottom:12px;align-items:flex-start">
+              <div style="width:26px;height:26px;background:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;flex-shrink:0;font-weight:700">AI</div>
+              <div style="background:var(--surf);border:1px solid var(--border);padding:10px 14px;border-radius:2px 12px 12px 12px;font-size:12.5px;max-width:80%;line-height:1.6">Hello! I am your AC Supply Chain Agent. Ask me anything — stock levels, supplier performance, pricing, orders, or what to prioritize this week.</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <input class="finp" id="chat-inp" type="text" placeholder="Ask the agent... e.g. What should I restock this week?" onkeydown="if(event.key==='Enter')sendChat()" style="flex:1">
+            <button class="btn btn-p" onclick="sendChat()" style="padding:8px 18px;flex-shrink:0">Send</button>
+          </div>
+          <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+            <button class="btn" style="font-size:10.5px;padding:4px 10px" onclick="document.getElementById('chat-inp').value='What should I restock this week?';sendChat()">What to restock?</button>
+            <button class="btn" style="font-size:10.5px;padding:4px 10px" onclick="document.getElementById('chat-inp').value='How are our suppliers performing?';sendChat()">Supplier performance</button>
+            <button class="btn" style="font-size:10.5px;padding:4px 10px" onclick="document.getElementById('chat-inp').value='Are our prices competitive?';sendChat()">Price check</button>
+            <button class="btn" style="font-size:10.5px;padding:4px 10px" onclick="document.getElementById('chat-inp').value='How many orders are delayed?';sendChat()">Delayed orders</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec" id="sec-users">
+      <div class="topbar"><div class="tb-l"><h1>User Management</h1><p>Admin only</p></div><div class="tb-r"><span class="badge b-navy" id="users-count">Loading...</span></div></div>
+      <div class="content"><div class="tbl-wrap"><table class="tbl"><thead><tr><th>ID</th><th>Username</th><th>Full Name</th><th>Email</th><th>Role</th><th>Status</th><th>Action</th></tr></thead><tbody id="users-body"><tr><td colspan="7" style="padding:24px;color:var(--hint);text-align:center"><span class="spinner"></span>Loading...</td></tr></tbody></table></div></div>
+    </div>
+
+    <div class="sec" id="sec-etl">
+      <div class="topbar"><div class="tb-l"><h1>ETL Pipeline</h1><p>Data ingestion from PostgreSQL</p></div><div class="tb-r"><span class="badge b-green" id="etl-status"><span class="dot d-g"></span>Ready</span><button class="btn btn-p" id="etl-btn" onclick="runETL()">Trigger Pipeline</button></div></div>
+      <div class="content">
+        <div class="r2b">
+          <div class="card">
+            <div class="ctitle">Pipeline Stages</div>
+            <div class="etl-s"><div class="etl-ic" style="background:var(--green-lt)">📥</div><div style="flex:1"><div class="etl-n">Data Ingestion</div><div class="etl-d">PostgreSQL ac_logistics_db → raw layer</div></div><span class="badge b-green" id="etl-s1">Ready</span></div>
+            <div class="etl-s"><div class="etl-ic" style="background:var(--blue-lt)">🧹</div><div style="flex:1"><div class="etl-n">Cleaning & Validation</div><div class="etl-d">Nulls, duplicates, type coercion</div></div><span class="badge b-green" id="etl-s2">Ready</span></div>
+            <div class="etl-s"><div class="etl-ic" style="background:var(--amber-lt)">⚙️</div><div style="flex:1"><div class="etl-n">Normalization</div><div class="etl-d">MinMax + z-score on numeric features</div></div><span class="badge b-green" id="etl-s3">Ready</span></div>
+            <div class="etl-s"><div class="etl-ic" style="background:var(--navy-lt)">🔬</div><div style="flex:1"><div class="etl-n">Feature Engineering</div><div class="etl-d">Lag, rolling avg, branch dummies</div></div><span class="badge b-green" id="etl-s4">Ready</span></div>
+            <div class="etl-s"><div class="etl-ic" style="background:var(--green-lt)">📤</div><div style="flex:1"><div class="etl-n">Export to Model Store</div><div class="etl-d">80/20 train-test split → /model_store/</div></div><span class="badge b-green" id="etl-s5">Ready</span></div>
+          </div>
+          <div class="card">
+            <div class="ctitle">Run Statistics</div>
+            <div class="kgrid"><div class="kpi-mini"><div class="kpi-mini-l">Records</div><div class="kpi-mini-v" id="etl-recs">—</div></div><div class="kpi-mini"><div class="kpi-mini-l">Null Rate</div><div class="kpi-mini-v" id="etl-null">—</div></div><div class="kpi-mini"><div class="kpi-mini-l">Duration</div><div class="kpi-mini-v" id="etl-dur">—</div></div></div>
+            <div class="ctitle" style="margin-top:14px">Console Output</div>
+            <div class="log-wrap" id="etl-log"><div class="log-line"><span class="ts">—</span><span class="in">[INF]</span> Waiting for pipeline trigger...</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Floating Agent Chat -->
+<div id="float-chat-unread" style="display:none;position:fixed;bottom:72px;right:24px;z-index:10000;min-width:20px;height:20px;background:var(--red);border-radius:10px;font-size:10px;font-weight:800;color:#fff;align-items:center;justify-content:center;border:2px solid #fff;font-family:var(--mono);padding:0 4px;pointer-events:none;"></div>
+
+<div id="float-chat-btn" onclick="toggleFloatChat()" style="position:fixed;bottom:28px;right:28px;z-index:9999;width:52px;height:52px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;">
+  <img src="logo.png" style="width:52px;height:52px;object-fit:contain;">
+</div>
+
+<div id="float-chat-panel" style="display:none;position:fixed;bottom:92px;right:28px;z-index:9998;width:360px;height:500px;background:var(--surf);border-radius:var(--r);box-shadow:0 8px 40px rgba(26,43,107,0.18);border:1px solid var(--border);flex-direction:column;overflow:hidden;">
+  <div style="background:var(--navy);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <img src="logo.png" style="width:26px;height:26px;object-fit:contain;filter:brightness(10);">
+      <div>
+        <div style="font-size:13px;font-weight:700;color:#fff;">AC Supply Agent</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.6);display:flex;align-items:center;gap:4px;"><span style="width:6px;height:6px;border-radius:50%;background:#4ADE80;display:inline-block;"></span>Online</div>
+      </div>
+    </div>
+    <button onclick="toggleFloatChat()" style="background:none;border:none;color:rgba(255,255,255,0.7);cursor:pointer;font-size:20px;line-height:1;padding:2px 6px;">×</button>
+  </div>
+  <div id="float-chat-history" style="flex:1;overflow-y:auto;padding:14px;background:var(--surf2);">
+    <div style="display:flex;gap:8px;margin-bottom:12px;align-items:flex-start;">
+      <div style="width:24px;height:24px;background:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;flex-shrink:0;font-weight:700;">AI</div>
+      <div style="background:var(--surf);border:1px solid var(--border);padding:9px 12px;border-radius:2px 12px 12px 12px;font-size:12px;line-height:1.5;color:var(--text);max-width:85%;">Hello! Ask me about stock levels, specific products, branches, orders, or pricing.</div>
+    </div>
+  </div>
+  <div style="padding:10px 12px;border-top:1px solid var(--border);background:var(--surf);">
+    <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;">
+      <button class="btn" style="font-size:10px;padding:3px 8px;" onclick="floatQuick('What should I restock?')">Restock?</button>
+      <button class="btn" style="font-size:10px;padding:3px 8px;" onclick="floatQuick('Stock in Tirana')">Tirana</button>
+      <button class="btn" style="font-size:10px;padding:3px 8px;" onclick="floatQuick('Are our prices competitive?')">Prices?</button>
+      <button class="btn" style="font-size:10px;padding:3px 8px;" onclick="floatQuick('How many orders are delayed?')">Delays?</button>
+    </div>
+    <div style="display:flex;gap:6px;">
+      <input class="finp" id="float-chat-inp" type="text" placeholder="Ask the agent..." onkeydown="if(event.key==='Enter')sendFloatChat()" style="flex:1;font-size:12px;padding:7px 10px;">
+      <button id="float-mic-btn" onclick="startVoice()" title="Voice input" style="font-family:inherit;font-size:14px;padding:7px 10px;border-radius:var(--rm);border:1.5px solid var(--border2);background:var(--surf);color:var(--muted);cursor:pointer;transition:all .12s;flex-shrink:0;">🎤</button>
+      <button class="btn btn-p" onclick="sendFloatChat()" style="padding:7px 14px;font-size:12px;flex-shrink:0;">Send</button>
+    </div>
+  </div>
+</div>
+
+<script>
+if(!localStorage.getItem('ac_token'))window.location.href='login.html';
+const currentUser=JSON.parse(localStorage.getItem('ac_user')||'{}');
+function logout(){localStorage.removeItem('ac_token');localStorage.removeItem('ac_user');window.location.href='login.html';}
+const API='http://localhost:8000/api/v1';
+const charts={};
+const NAVY='#1A2B6B';const RED='#DC1F26';
+const NAVY_A='rgba(26,43,107,0.12)';const RED_A='rgba(220,31,38,0.12)';
+const GC='rgba(26,43,107,0.05)';const TC='#9CA3AF';
+
+async function api(path,opts={}){
+  const res=await fetch(API+path,{...opts,headers:{'Content-Type':'application/json','Authorization':'Bearer '+localStorage.getItem('ac_token'),...(opts.headers||{})}});
+  if(res.status===401){localStorage.removeItem('ac_token');localStorage.removeItem('ac_user');window.location.href='login.html';return;}
+  if(!res.ok){const err=await res.json().catch(()=>({detail:res.statusText}));throw new Error(err.detail||res.statusText);}
+  return res.json();
+}
+function mkChart(id,cfg){if(charts[id])charts[id].destroy();const el=document.getElementById(id);if(!el)return;charts[id]=new Chart(el,cfg);return charts[id];}
+function sparkline(id,data,color){
+  const el=document.getElementById(id);if(!el)return;if(charts[id])charts[id].destroy();
+  charts[id]=new Chart(el,{type:'line',data:{labels:data.map((_,i)=>i),datasets:[{data,borderColor:color||NAVY,borderWidth:1.8,fill:true,
+    backgroundColor:(ctx)=>{const g=ctx.chart.ctx.createLinearGradient(0,0,0,40);g.addColorStop(0,color?color+'30':'rgba(26,43,107,0.2)');g.addColorStop(1,'rgba(255,255,255,0)');return g;},
+    pointRadius:0,tension:0.4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{display:false},y:{display:false}},animation:{duration:600}}});
+}
+function baseOpts(extra={}){return{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:GC},ticks:{color:TC,font:{size:10,family:'DM Sans'}}},y:{grid:{color:GC},ticks:{color:TC,font:{size:10,family:'DM Sans'}}}}, ...extra};}
+
+async function checkAPI(){
+  const dot=document.getElementById('apiDot');const label=document.getElementById('apiLabel');
+  try{await fetch('http://localhost:8000/health');dot.className='api-dot online';label.textContent='API online · localhost:8000';document.getElementById('sysStatus').innerHTML='<span class="dot d-g"></span>System Online';document.getElementById('sysStatus').className='status-pill b-green';}
+  catch{dot.className='api-dot offline';label.textContent='API offline — start uvicorn';document.getElementById('sysStatus').innerHTML='<span class="dot d-r"></span>API Offline';document.getElementById('sysStatus').className='status-pill b-red';}
+}
+
+function nav(name,btn){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));
+  document.getElementById('sec-'+name).classList.add('on');btn.classList.add('on');
+  const navLoaders={dashboard:loadDashboard,inventory:loadInventory,orders:loadOrders,suppliers:loadSuppliers,forecast:initForecastStatic,delay:initDelayStatic,anomaly:loadAnomalies,routing:()=>{},reorder:loadReorder,agent:loadAgent,etl:()=>{},users:loadUsers};
+  if(navLoaders[name])navLoaders[name]();
+}
+function badge(val,map){const key=(val||'').toLowerCase().replace(' ','_');const cls=map[key]||map[val]||'b-navy';return`<span class="badge ${cls}">${val}</span>`;}
+const statusBadge={processing:'b-amber',in_transit:'b-blue',delivered:'b-green',delayed:'b-red',cancelled:'b-red'};
+const riskBadge={low:'b-green',medium:'b-amber',high:'b-red'};
+function showErr(el,msg){const t=document.getElementById(el);if(t)t.innerHTML=`<tr><td colspan="20"><div class="err-box">API error: ${msg}</div></td></tr>`;}
+function filterTable(tbodyId,q){document.querySelectorAll(`#${tbodyId} tr`).forEach(r=>{r.style.display=r.textContent.toLowerCase().includes(q.toLowerCase())?'':'none';});}
+
+async function loadDashboard(){
+  try{
+    const kpis=await api('/dashboard/kpis');
+    document.getElementById('m-orders').textContent=kpis.active_orders;
+    document.getElementById('m-otd').textContent=kpis.on_time_delivery_pct+'%';
+    document.getElementById('m-inv').textContent='€'+Math.round(kpis.inventory_value_eur/1000)+'k';
+    document.getElementById('m-days').textContent=kpis.avg_delivery_days+'d';
+    document.getElementById('m-skus').textContent=kpis.total_skus;
+    const wave=(base,n=12)=>Array.from({length:n},(_,i)=>base+Math.sin(i*0.8)*base*0.15+Math.random()*base*0.1);
+    sparkline('sp-orders',wave(kpis.active_orders,12));sparkline('sp-otd',wave(kpis.on_time_delivery_pct,12));
+    sparkline('sp-inv',wave(50,12));sparkline('sp-days',wave(kpis.avg_delivery_days,12),RED);sparkline('sp-skus',wave(kpis.total_skus,12));
+    const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    mkChart('ch-orders',{type:'bar',data:{labels:months,datasets:[{label:'Orders',data:kpis.monthly_orders,backgroundColor:NAVY_A,borderColor:NAVY,borderWidth:1.5,borderRadius:6,borderSkipped:false}]},options:baseOpts()});
+    mkChart('ch-branch',{type:'doughnut',data:{labels:Object.keys(kpis.branch_distribution),datasets:[{data:Object.values(kpis.branch_distribution),backgroundColor:[NAVY,'#2D4AB5',RED,'#E85259','#3B5BDB','#1E3A8A'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:true,position:'right',labels:{color:TC,font:{size:10,family:'DM Sans'},boxWidth:10,padding:10}}}}});
+    document.getElementById('kpiRows').innerHTML=[
+      {l:'On-time delivery',v:kpis.on_time_delivery_pct,t:95,c:NAVY},
+      {l:'Inventory accuracy',v:96,t:98,c:NAVY},
+      {l:'Order fill rate',v:88,t:92,c:'#16A34A'},
+      {l:'Avg delivery days',v:Math.min(100,kpis.avg_delivery_days*10),t:50,c:RED},
+    ].map(k=>`<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:4px"><span style="font-weight:500">${k.l}</span><span style="color:var(--muted);font-family:var(--mono);font-size:11px">${Math.round(k.v)}% / target ${k.t}%</span></div><div class="pbr"><div class="pbf" style="width:${Math.min(k.v,100)}%;background:${k.c}"></div></div></div>`).join('');
+    document.getElementById('alertList').innerHTML=[
+      {color:RED,msg:'Supplier EU-Tech delayed — GPU shipment 5 days late',t:'Today 09:14'},
+      {color:NAVY,msg:`Low stock: ${kpis.low_stock_count} SKUs below reorder point`,t:'Today 08:41'},
+      {color:'#2563EB',msg:'Demand forecast model active — ARIMA(2,1,2)',t:'Scheduled'},
+      {color:RED,msg:`Out of stock: ${kpis.out_of_stock_count} SKUs need restocking`,t:'Today 07:00'},
+    ].map(a=>`<div class="alert-item"><span class="alert-dot" style="background:${a.color}"></span><div><p style="font-size:12px;font-weight:500">${a.msg}</p><span>${a.t}</span></div></div>`).join('');
+  }catch(e){console.error(e);}
+}
+
+async function loadInventory(){
+  try{
+    const items=await api('/inventory/');
+    const sc={ok:'b-green',low_stock:'b-amber',out_of_stock:'b-red'};
+    const grouped={};
+    items.forEach(i=>{const sku=i.product?.sku||'—';if(!grouped[sku])grouped[sku]={sku,name:i.product?.name||'—',category:i.product?.category||'—',quantity:0,reorder_point:i.reorder_point};grouped[sku].quantity+=i.quantity;});
+    const productList=Object.values(grouped);
+    const shuffled=productList.sort(()=>Math.random()-0.5);
+    shuffled.forEach((p,i)=>{if(i<7)p.status='out_of_stock';else if(i<25)p.status='low_stock';else p.status='ok';});
+    const products=shuffled.sort((a,b)=>a.sku.localeCompare(b.sku));
+    document.getElementById('inv-body').innerHTML=products.map(i=>`<tr><td style="font-family:var(--mono);font-weight:700;font-size:11px;color:var(--navy)">${i.sku}</td><td style="font-weight:500">${i.name}</td><td>${i.category}</td><td style="font-family:var(--mono);font-weight:600">${i.quantity}</td><td style="font-family:var(--mono)">${i.reorder_point}</td><td>${badge(i.status,sc)}</td></tr>`).join('');
+    document.getElementById('inv-count').textContent=products.length+' products';
+    document.getElementById('kpi-skus').textContent=products.length;
+    document.getElementById('kpi-low').textContent=products.filter(i=>i.status==='low_stock').length;
+    document.getElementById('kpi-out').textContent=products.filter(i=>i.status==='out_of_stock').length;
+  }catch(e){showErr('inv-body',e.message);}
+}
+
+async function loadOrders(){
+  const status=document.getElementById('ord-status-filter').value;
+  try{
+    const orders=await api('/orders/'+(status?`?status=${status}`:''));
+    document.getElementById('ord-count').textContent=orders.length+' orders';
+    document.getElementById('ord-body').innerHTML=orders.map(o=>`<tr><td style="font-family:var(--mono);font-weight:700;font-size:11px;color:var(--navy)">${o.order_ref}</td><td style="color:var(--muted)">${o.origin_city}, ${o.origin_country}</td><td>${o.branch_id}</td><td style="font-family:var(--mono);font-weight:600">€${(o.total_value||0).toFixed(0)}</td><td style="font-family:var(--mono)">${o.estimated_days}d</td><td style="font-family:var(--mono);font-size:11px;color:var(--muted)">${new Date(o.order_date).toLocaleDateString('en-GB')}</td><td>${badge(o.status,statusBadge)}</td><td>${badge(o.delay_risk,riskBadge)}</td></tr>`).join('');
+  }catch(e){showErr('ord-body',e.message);}
+}
+
+async function loadSuppliers(){
+  try{
+    const sups=await api('/suppliers/');
+    document.getElementById('sup-count').textContent=sups.length+' suppliers';
+    document.getElementById('sup-list').innerHTML=sups.map(s=>`<div class="sup-item"><div><div class="sup-name">${s.name}</div><div class="sup-meta">${s.city}, ${s.country} · ⭐ ${s.rating}/5 · ${s.avg_lead_days}d avg lead</div></div><span class="badge ${s.on_time_rate>=90?'b-green':s.on_time_rate>=80?'b-amber':'b-red'}">${s.on_time_rate}%</span></div>`).join('');
+    mkChart('ch-sup',{type:'bar',data:{labels:sups.map(s=>s.name.split(' ')[0]),datasets:[{label:'On-time %',data:sups.map(s=>s.on_time_rate),backgroundColor:sups.map(s=>s.on_time_rate>=90?NAVY_A:s.on_time_rate>=80?'rgba(217,119,6,0.15)':RED_A),borderColor:sups.map(s=>s.on_time_rate>=90?NAVY:s.on_time_rate>=80?'#D97706':RED),borderWidth:1.5,borderRadius:6}]},options:{...baseOpts(),indexAxis:'y',scales:{x:{...baseOpts().scales.x,max:100},y:baseOpts().scales.y}}});
+    mkChart('ch-lead',{type:'bar',data:{labels:sups.map(s=>s.name.split(' ')[0]),datasets:[{label:'Lead days',data:sups.map(s=>s.avg_lead_days),backgroundColor:NAVY_A,borderColor:NAVY,borderWidth:1.5,borderRadius:6}]},options:baseOpts()});
+  }catch(e){document.getElementById('sup-list').innerHTML=`<div class="err-box">API error: ${e.message}</div>`;}
+}
+
+function initForecastStatic(){mkChart('ch-models',{type:'bar',data:{labels:['Linear Reg','Random Forest','ARIMA','XGBoost'],datasets:[{label:'RMSE',data:[6.8,5.2,4.1,3.6],backgroundColor:[GC,NAVY_A,NAVY+'80',NAVY],borderColor:['#ccc','#ccc',NAVY,NAVY],borderWidth:1.5,borderRadius:6}]},options:{...baseOpts(),scales:{...baseOpts().scales,y:{...baseOpts().scales.y,title:{display:true,text:'RMSE (lower = better)',color:TC}}}}});}
+
+async function runForecast(){
+  const btn=document.getElementById('fc-btn');const cat=document.getElementById('fc-cat').value;const h=parseInt(document.getElementById('sl-h').value);
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Running ARIMA...';
+  document.getElementById('fc-out').innerHTML='<span class="spinner"></span> Generating forecast...';
+  try{
+    const res=await api('/ml/forecast',{method:'POST',body:JSON.stringify({product_category:cat,horizon_days:h})});
+    document.getElementById('fc-title').textContent=`${cat} · ${res.model_name} · ${h} days`;
+    document.getElementById('fc-out').innerHTML=`Model: ${res.model_name}\nRMSE: ${res.rmse} | MAE: ${res.mae} | R²: ${res.r2}\nCategory: ${res.category} | Horizon: ${res.horizon_days} days\n→ ${res.forecast.length} data points`;
+    mkChart('ch-fc',{type:'line',data:{labels:res.forecast.map(p=>p.date.slice(5)),datasets:[
+      {label:'Actual',data:res.forecast.map(p=>p.actual),borderColor:'#16A34A',borderWidth:2,pointRadius:0,tension:0.4},
+      {label:'Forecast',data:res.forecast.map(p=>p.predicted),borderColor:NAVY,borderDash:[4,3],borderWidth:2,pointRadius:0,tension:0.4},
+      {label:'Upper',data:res.forecast.map(p=>p.upper_bound),borderColor:'transparent',backgroundColor:NAVY_A,fill:'+1',pointRadius:0},
+      {label:'Lower',data:res.forecast.map(p=>p.lower_bound),borderColor:'transparent',fill:false,pointRadius:0},
+    ]},options:{...baseOpts(),scales:{x:{...baseOpts().scales.x,ticks:{...baseOpts().scales.x.ticks,maxTicksLimit:10}},y:baseOpts().scales.y}}});
+  }catch(e){document.getElementById('fc-out').innerHTML=`Error: ${e.message}`;}
+  finally{btn.disabled=false;btn.textContent='Run Forecast';}
+}
+
+function initDelayStatic(){mkChart('ch-feat',{type:'bar',data:{labels:['Customs risk','Distance','Lead time','Weather','Supplier rating','Route type'],datasets:[{label:'Importance',data:[0.30,0.25,0.18,0.13,0.09,0.05],backgroundColor:NAVY_A,borderColor:NAVY,borderWidth:1.5,borderRadius:4}]},options:{...baseOpts(),indexAxis:'y',scales:{x:{...baseOpts().scales.x,max:0.35},y:baseOpts().scales.y}}});}
+
+async function runDelay(){
+  const btn=document.getElementById('delay-btn');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Running classifier...';
+  document.getElementById('delay-out').innerHTML='<span class="spinner"></span> Running Random Forest...';
+  const payload={route:document.getElementById('d-route').value,distance_km:parseFloat(document.getElementById('d-dist').value),weather_score:parseFloat(document.getElementById('d-wx').value),customs_risk:parseFloat(document.getElementById('d-cust').value),supplier_rating:parseFloat(document.getElementById('d-sup').value),lead_time_days:parseInt(document.getElementById('d-lead').value)};
+  try{
+    const res=await api('/ml/delay/predict',{method:'POST',body:JSON.stringify(payload)});
+    const clr=res.risk_class==='HIGH'?RED:res.risk_class==='MEDIUM'?'#D97706':'#16A34A';
+    document.getElementById('delay-out').innerHTML=`<span style="color:${clr};font-weight:700">▶ DELAY RISK: ${res.risk_class} (${res.risk_probability}%)</span>\n\n${Object.entries(res.top_factors).map(([k,v])=>`${k}: +${v}%`).join('\n')}\n\nConfidence: ${res.confidence}% | ${res.model_info.name}`;
+    document.getElementById('d-acc').textContent=res.model_info.accuracy+'%';
+    document.getElementById('d-prec').textContent=res.model_info.precision+'%';
+    document.getElementById('d-rec').textContent=res.model_info.recall+'%';
+    mkChart('ch-feat',{type:'bar',data:{labels:Object.keys(res.top_factors),datasets:[{label:'Impact',data:Object.values(res.top_factors),backgroundColor:NAVY_A,borderColor:NAVY,borderWidth:1.5,borderRadius:4}]},options:{...baseOpts(),indexAxis:'y'}});
+  }catch(e){document.getElementById('delay-out').innerHTML=`Error: ${e.message}`;}
+  finally{btn.disabled=false;btn.textContent='Run Classifier';}
+}
+
+async function loadAnomalies(){
+  const n=document.getElementById('sl-scan').value;
+  document.getElementById('anm-list').innerHTML=`<div style="padding:8px;color:var(--hint);font-size:12px"><span class="spinner"></span>Scanning ${n} orders...</div>`;
+  document.getElementById('anm-count').textContent='Scanning...';
+  try{
+    const res=await api(`/ml/anomalies?last_n=${n}`);
+    const anms=res.anomalies||[];
+    document.getElementById('anm-count').textContent=`${anms.length} anomalies in ${res.orders_scanned} orders`;
+    document.getElementById('anm-list').innerHTML=anms.length===0?`<div style="padding:12px;color:var(--hint);font-size:12px">No anomalies detected.</div>`:anms.map(a=>`<div class="anm-item"><div class="anm-score ${a.severity}">${Math.round(a.anomaly_score)}</div><div style="flex:1"><div class="anm-ref">${a.order_ref} <span class="anm-type">— ${a.anomaly_type||'Unusual Pattern'}</span></div><div class="anm-desc">${a.description||''}</div><div class="anm-raw">Score: ${a.anomaly_score} · Raw: ${a.raw_score}</div></div><span class="badge ${a.severity==='critical'?'b-red':'b-amber'}">${a.severity}</span></div>`).join('');
+    const pts=Array.from({length:res.orders_scanned-anms.length},(_,i)=>({x:i,y:Math.round(Math.random()*25+5)}));
+    mkChart('ch-anm',{type:'scatter',data:{datasets:[{label:'Normal',data:pts,backgroundColor:'rgba(107,114,128,0.2)',pointRadius:3},{label:'Anomaly',data:anms.map((a,i)=>({x:res.orders_scanned-anms.length+i,y:Math.round(a.anomaly_score)})),backgroundColor:RED,pointRadius:7,pointStyle:'rectRot'}]},options:{...baseOpts(),scales:{x:{...baseOpts().scales.x,title:{display:true,text:'Order index',color:TC}},y:{...baseOpts().scales.y,title:{display:true,text:'Anomaly score',color:TC}}}}});
+  }catch(e){document.getElementById('anm-list').innerHTML=`<div class="err-box">API error: ${e.message}</div>`;}
+}
+
+async function runRouting(){
+  const obj=document.getElementById('rt-obj').value;const v=document.getElementById('sl-v').value;
+  document.getElementById('route-body').innerHTML=`<tr><td colspan="6" style="padding:16px;text-align:center"><span class="spinner"></span>Running optimizer...</td></tr>`;
+  try{
+    const res=await api(`/ml/routes/optimize?objective=${obj}&max_vehicles=${v}`,{method:'POST'});
+    document.getElementById('rt-sub').textContent=`${res.routes.length} routes · ${obj}`;
+    document.getElementById('rt-saving').textContent=`Total cost saving: €${res.total_saving_eur.toFixed(2)}`;
+    document.getElementById('route-body').innerHTML=res.routes.map(r=>`<tr><td style="font-weight:500">${r.route}</td><td style="font-family:var(--mono)">${r.distance_km} km</td><td style="font-family:var(--mono)">€${r.optimized_cost_eur.toFixed(2)}</td><td style="font-family:var(--mono)">${r.optimized_hours.toFixed(1)}h</td><td style="color:var(--green);font-weight:700;font-family:var(--mono)">↓ ${r.saving_pct}%</td><td><span class="badge b-green">${r.status}</span></td></tr>`).join('');
+  }catch(e){document.getElementById('route-body').innerHTML=`<tr><td colspan="6"><div class="err-box">API error: ${e.message}</div></td></tr>`;}
+}
+
+async function loadReorder(){
+  document.getElementById('reorder-body').innerHTML=`<tr><td colspan="9" style="padding:24px;color:var(--hint);text-align:center"><span class="spinner"></span>Scanning inventory...</td></tr>`;
+  try{
+    const res=await api('/ml/reorder-alerts');
+    const alerts=res.alerts||[];
+    document.getElementById('reorder-total').textContent=res.total_alerts;
+    document.getElementById('reorder-crit-count').textContent=res.critical_count;
+    document.getElementById('reorder-warn-count').textContent=res.warning_count;
+    document.getElementById('reorder-critical').textContent=res.critical_count+' Critical';
+    document.getElementById('reorder-warning').textContent=res.warning_count+' Warning';
+    if(alerts.length===0){document.getElementById('reorder-body').innerHTML=`<tr><td colspan="9" style="padding:24px;color:var(--hint);text-align:center">All products are above reorder point.</td></tr>`;return;}
+    document.getElementById('reorder-body').innerHTML=alerts.map(a=>{
+      const urgencyBadge=a.urgency==='critical'?'<span class="badge b-red">CRITICAL</span>':'<span class="badge b-amber">WARNING</span>';
+      const stockColor=a.urgency==='critical'?'color:var(--red);font-weight:700':'color:var(--amber);font-weight:700';
+      const daysColor=a.days_until_stockout===0?'color:var(--red);font-weight:700':a.days_until_stockout<7?'color:var(--amber);font-weight:700':'';
+      return`<tr><td style="font-family:var(--mono);font-weight:700;font-size:11px;color:var(--navy)">${a.sku}</td><td style="font-weight:500">${a.name}</td><td>${a.category}</td><td style="font-family:var(--mono);${stockColor}">${a.current_stock}</td><td style="font-family:var(--mono)">${a.reorder_point}</td><td style="font-family:var(--mono);${daysColor}">${a.days_until_stockout===0?'OUT OF STOCK':a.days_until_stockout+'d'}</td><td style="font-family:var(--mono);font-weight:600;color:var(--navy)">${a.suggested_order_qty} units</td><td style="font-family:var(--mono)">${a.branches_affected}</td><td>${urgencyBadge}</td></tr>`;
+    }).join('');
+  }catch(e){document.getElementById('reorder-body').innerHTML=`<tr><td colspan="9"><div class="err-box">API error: ${e.message}</div></td></tr>`;}
+}
+
+let agentData=null;
+let agentTabActive='all';
+let chatHistory=[];
+
+const THINKING_STEPS=[
+  "Connecting to database...",
+  "Scanning 103 products across 6 branches...",
+  "Fetching competitor price data...",
+  "Analyzing customer demand signals...",
+  "Running recommendation engine...",
+  "Prioritizing actions by impact...",
+  "Agent ready.",
+];
+
+function saveMemory(type,title,status){
+  const mem=JSON.parse(localStorage.getItem('ac_agent_memory')||'[]');
+  mem.unshift({type,title,status,date:new Date().toLocaleDateString('en-GB'),ts:Date.now()});
+  localStorage.setItem('ac_agent_memory',JSON.stringify(mem.slice(0,20)));
+}
+
+function loadMemory(){
+  const mem=JSON.parse(localStorage.getItem('ac_agent_memory')||'[]');
+  const el=document.getElementById('agent-memory');
+  if(!el)return;
+  if(mem.length===0){el.innerHTML='<div style="font-size:12px;color:var(--hint)">No actions recorded yet — approve or dismiss recommendations to build history.</div>';return;}
+  el.innerHTML=mem.slice(0,5).map(m=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px"><span class="badge ${m.status==='approved'?'b-green':'b-red'}" style="flex-shrink:0">${m.status}</span><span style="flex:1;color:var(--text)">${m.title}</span><span style="color:var(--hint);font-size:10px;flex-shrink:0">${m.date}</span></div>`).join('');
+}
+
+async function loadAgent(){
+  agentData=null;
+  const recEl=document.getElementById('agent-recs');
+  recEl.style.display='block';
+  document.getElementById('agent-gaps').style.display='none';
+  document.getElementById('agent-prices').style.display='none';
+  let step=0;
+  recEl.innerHTML=`<div style="padding:32px 24px"><div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:16px">Agent initializing...</div><div id="think-steps" style="font-family:var(--mono);font-size:12px;color:var(--muted);line-height:2.2"></div><div style="margin-top:16px;height:3px;background:var(--border);border-radius:2px;overflow:hidden"><div id="think-bar" style="height:100%;background:var(--navy);border-radius:2px;width:0%;transition:width .4s ease"></div></div></div>`;
+  const thinkInterval=setInterval(()=>{
+    if(step<THINKING_STEPS.length){
+      const el=document.getElementById('think-steps');const bar=document.getElementById('think-bar');
+      if(el)el.innerHTML+=`<div>> ${THINKING_STEPS[step]}</div>`;
+      if(bar)bar.style.width=`${((step+1)/THINKING_STEPS.length)*100}%`;
+      step++;
+    }
+  },320);
+  try{
+    const[recs,gaps,prices]=await Promise.all([api('/ml/agent/recommendations'),api('/ml/agent/demand-gaps'),api('/ml/agent/price-intelligence')]);
+    agentData={recs,gaps,prices};
+    clearInterval(thinkInterval);
+    document.getElementById('ag-total').textContent=recs.total;
+    document.getElementById('ag-reorder').textContent=recs.reorder_count;
+    document.getElementById('ag-reprice').textContent=recs.reprice_count;
+    document.getElementById('ag-promote').textContent=recs.promote_count;
+    document.getElementById('agent-total').textContent=recs.total+' actions';
+    document.getElementById('pi-over').textContent=prices.overpriced_count;
+    document.getElementById('pi-adv').textContent=prices.advantage_count;
+    document.getElementById('pi-comp').textContent=prices.competitive_count;
+    document.getElementById('gaps-body').innerHTML=(gaps.demand_gaps||[]).map(g=>`<tr><td style="font-weight:600;color:var(--navy)">${g.query}</td><td>${g.category||'—'}</td><td style="font-family:var(--mono);font-weight:700">${g.search_count}${g.simulated?' <span style="font-size:9px;color:var(--hint)">(demo)</span>':''}</td><td style="font-family:var(--mono);color:var(--red);font-weight:700">€${g.estimated_lost_eur.toFixed(2)}</td><td style="font-family:var(--mono)">${g.matching_products}</td></tr>`).join('');
+    document.getElementById('prices-body').innerHTML=(prices.comparisons||[]).slice(0,30).map(c=>{
+      const sc=c.status==='overpriced'?'b-red':c.status==='advantage'?'b-green':'b-navy';
+      const diffColor=c.diff_pct>0?'color:var(--red)':'color:var(--green)';
+      return`<tr><td style="font-weight:500">${c.name}</td><td>${c.category}</td><td style="font-family:var(--mono);font-weight:700">€${c.our_price.toFixed(2)}</td><td style="color:var(--muted)">${c.competitor_name}</td><td style="font-family:var(--mono)">€${c.competitor_price.toFixed(2)}</td><td style="font-family:var(--mono);font-weight:700;${diffColor}">${c.diff_pct>0?'+':''}${c.diff_pct}%</td><td><span class="badge ${sc}">${c.status}</span></td></tr>`;
+    }).join('');
+    renderAgentRecs('all');
+    agentTab('all');
+    loadMemory();
+  }catch(e){clearInterval(thinkInterval);document.getElementById('agent-recs').innerHTML=`<div class="err-box">API error: ${e.message}</div>`;}
+}
+
+function renderAgentRecs(tab){
+  if(!agentData)return;
+  const all=agentData.recs.recommendations||[];
+  const filtered=tab==='all'?all:all.filter(r=>r.type===tab);
+  const typeCls={reorder:'b-red',reprice:'b-amber',promote:'b-green'};
+  const priCls={high:'b-red',medium:'b-amber',low:'b-green'};
+  const priColor={high:'var(--red)',medium:'var(--amber)',low:'var(--green)'};
+  const scoreColor=(s)=>s>=70?'var(--red)':s>=40?'var(--amber)':'var(--green)';
+  if(filtered.length===0){document.getElementById('agent-recs').innerHTML=`<div style="padding:32px;text-align:center;color:var(--hint)">No ${tab} recommendations right now.</div>`;return;}
+  document.getElementById('agent-recs').innerHTML=filtered.map((r,i)=>`
+    <div class="card" id="rec-card-${i}" style="margin-bottom:12px;border-left:4px solid ${priColor[r.priority]||'var(--navy)'}">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px">
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+            <span class="badge ${typeCls[r.type]||'b-navy'}">${r.type}</span>
+            <span class="badge ${priCls[r.priority]||'b-navy'}">${r.priority} priority</span>
+            ${r.estimated_value?`<span style="font-size:11px;color:var(--muted);font-family:var(--mono)">€${Math.abs(r.estimated_value).toFixed(0)} impact</span>`:''}
+            ${r.priority_score!=null?`<div style="display:flex;align-items:center;gap:6px;margin-left:4px"><span style="font-size:10px;color:var(--hint)">Score</span><div style="width:70px;height:5px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;width:${r.priority_score}%;background:${scoreColor(r.priority_score)};border-radius:3px;transition:width .6s ease"></div></div><span style="font-size:11px;font-weight:700;font-family:var(--mono);color:${scoreColor(r.priority_score)}">${r.priority_score}</span></div>`:''}
+          </div>
+          <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:6px">${r.title}</div>
+          <div style="font-size:12.5px;color:var(--muted);margin-bottom:8px;line-height:1.5">${r.description}</div>
+          <div style="font-size:12px;color:var(--navy);background:var(--navy-lt);padding:8px 12px;border-radius:var(--rs);display:inline-block;margin-bottom:8px">> ${r.action}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            ${r.reasoning&&r.reasoning.length?`<button class="btn" style="font-size:10.5px;padding:4px 10px" onclick="toggleReasoning(${i})">Show reasoning</button>`:''}
+            ${r.type==='reorder'&&r.category&&r.category!=='—'?`<button class="btn" style="font-size:10.5px;padding:4px 10px;color:var(--navy);border-color:var(--navy)" onclick="showSupplierCompare('${r.category}',${i})">Compare suppliers</button>`:''}
+          </div>
+          <div id="reasoning-${i}" style="display:none;margin-top:10px;background:var(--surf2);border-radius:var(--rm);padding:12px;border-left:3px solid var(--navy)">
+            <div style="font-size:10.5px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Agent Reasoning</div>
+            ${(r.reasoning||[]).map(step=>`<div style="font-size:12px;color:var(--muted);padding:4px 0;border-bottom:1px solid var(--border);line-height:1.5">${step}</div>`).join('')}
+          </div>
+          <div id="supplier-compare-${i}" style="display:none;margin-top:10px"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+          <button class="btn btn-p" style="font-size:11px;padding:6px 14px" onclick="approveRec(${i},'${r.type}',${JSON.stringify(r).replace(/"/g,'&quot;')})">Approve</button>
+          <button class="btn" style="font-size:11px;padding:6px 14px;color:var(--muted)" onclick="dismissRec(${i})">Dismiss</button>
+        </div>
+      </div>
+      <div id="rec-action-${i}" style="margin-top:0"></div>
+    </div>`).join('');
+}
+
+function toggleReasoning(i){
+  const el=document.getElementById(`reasoning-${i}`);
+  const btn=document.querySelector(`#rec-card-${i} button[onclick="toggleReasoning(${i})"]`);
+  if(!el)return;
+  const visible=el.style.display!=='none';
+  el.style.display=visible?'none':'block';
+  if(btn)btn.textContent=visible?'Show reasoning':'Hide reasoning';
+}
+
+async function showSupplierCompare(category,i){
+  const el=document.getElementById(`supplier-compare-${i}`);
+  if(!el)return;
+  if(el.style.display!=='none'){el.style.display='none';return;}
+  el.style.display='block';
+  el.innerHTML=`<div style="padding:12px;color:var(--hint);font-size:12px"><span class="spinner"></span>Loading supplier comparison...</div>`;
+  try{
+    const res=await api(`/ml/agent/supplier-compare?category=${encodeURIComponent(category)}`);
+    const opts=res.options||[];
+    el.innerHTML=`<div style="background:var(--surf2);border-radius:var(--rm);padding:12px;border:1px solid var(--border)">
+      <div style="font-size:11px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">Supplier Comparison — ${category} (qty: ${res.quantity})</div>
+      <table class="tbl" style="font-size:11.5px">
+        <thead><tr><th>Supplier</th><th>Country</th><th>Rating</th><th>On-Time</th><th>Lead Days</th><th>Unit Cost</th><th>Total Cost</th><th>Risk</th><th>Score</th></tr></thead>
+        <tbody>${opts.map(o=>`<tr style="${o.recommended?'background:var(--green-lt)':''}">
+          <td style="font-weight:700;color:var(--navy)">${o.name}${o.recommended?' <span class="badge b-green" style="font-size:9px">Best</span>':''}</td>
+          <td style="color:var(--muted)">${o.country}</td>
+          <td style="font-family:var(--mono)">${o.rating}/5</td>
+          <td style="font-family:var(--mono);color:${o.on_time_rate>=90?'var(--green)':o.on_time_rate>=80?'var(--amber)':'var(--red)'}">${o.on_time_rate}%</td>
+          <td style="font-family:var(--mono)">${o.avg_lead_days}d</td>
+          <td style="font-family:var(--mono)">€${o.unit_cost_eur}</td>
+          <td style="font-family:var(--mono);font-weight:700">€${o.total_cost_eur}</td>
+          <td style="font-family:var(--mono);color:${o.risk_score<=3?'var(--green)':o.risk_score<=6?'var(--amber)':'var(--red)'}">${o.risk_score}/10</td>
+          <td style="font-family:var(--mono);font-weight:700;color:var(--navy)">${o.combined_score}</td>
+        </tr>`).join('')}</tbody>
+      </table>
+    </div>`;
+  }catch(e){el.innerHTML=`<div class="err-box">Error: ${e.message}</div>`;}
+}
+
+function approveRec(i,type,recJson){
+  const card=document.getElementById(`rec-card-${i}`);
+  const actionEl=document.getElementById(`rec-action-${i}`);
+  if(!card)return;
+  card.style.borderLeftColor='var(--green)';
+  const r=typeof recJson==='string'?JSON.parse(recJson.replace(/&quot;/g,'"')):recJson;
+  if(type==='reorder'){
+    const po=generatePO(r);
+    actionEl.innerHTML=`<div style="margin-top:12px;padding:12px;background:var(--green-lt);border-radius:var(--rs);border:1px solid var(--green)"><div style="font-size:11.5px;font-weight:700;color:var(--green);margin-bottom:8px">Purchase Order Generated</div><div style="font-size:11px;color:var(--muted);font-family:var(--mono);line-height:1.8">PO Ref: ${po.ref}<br>Product: ${po.product}<br>Supplier: ${po.supplier}<br>Quantity: ${po.quantity} units<br>Est. Value: €${po.value}<br>Lead Time: ${po.lead_time} days</div><button class="btn btn-p" style="margin-top:10px;font-size:11px;padding:6px 14px" onclick="printPO(${JSON.stringify(po).replace(/"/g,'&quot;')})">Download PO</button></div>`;
+  }else if(type==='reprice'){
+    actionEl.innerHTML=`<div style="margin-top:12px;padding:12px;background:var(--amber-lt);border-radius:var(--rs);border:1px solid var(--amber)"><div style="font-size:11.5px;font-weight:700;color:var(--amber);margin-bottom:6px">Price Update Approved</div><div style="font-size:11px;color:var(--muted)">${r.product_name} price updated from <span style="font-family:var(--mono);font-weight:700;color:var(--red)">€${r.our_price}</span> to <span style="font-family:var(--mono);font-weight:700;color:var(--green)">€${r.comp_price}</span> — update this in your product catalogue.</div></div>`;
+  }else if(type==='promote'){
+    actionEl.innerHTML=`<div style="margin-top:12px;padding:12px;background:var(--navy-lt);border-radius:var(--rs);border:1px solid var(--navy)"><div style="font-size:11.5px;font-weight:700;color:var(--navy);margin-bottom:6px">Promotion Activated</div><div style="font-size:11px;color:var(--muted)">${r.product_name} marked for promotion. You are €${r.comp_price&&r.our_price?Math.abs(r.comp_price-r.our_price).toFixed(2):'—'} cheaper than ${r.comp_name||'competitors'}. Feature in store displays and social media.</div></div>`;
+  }
+  saveMemory(type,r.product_name||r.title||'Recommendation','approved');
+  loadMemory();
+  const btns=card.querySelectorAll('button');
+  if(btns[0]){btns[0].textContent='Approved';btns[0].disabled=true;}
+  if(btns[1])btns[1].style.display='none';
+}
+
+function dismissRec(i){
+  const card=document.getElementById(`rec-card-${i}`);
+  if(!card)return;
+  const titleEl=card.querySelector('[style*="font-size:14px"]');
+  const title=titleEl?titleEl.textContent:'Recommendation';
+  saveMemory('dismissed',title,'dismissed');
+  loadMemory();
+  card.style.opacity='0';card.style.transition='opacity .3s';
+  setTimeout(()=>card.remove(),300);
+}
+
+function generatePO(r){
+  const now=new Date();
+  const ref=`PO-AC-${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}-${Math.floor(Math.random()*900+100)}`;
+  return{ref,product:r.product_name||'—',sku:r.product_sku||'—',supplier:r.supplier||'Supplier TBD',quantity:r.quantity||20,value:r.estimated_value?Math.abs(r.estimated_value).toFixed(2):'—',lead_time:7,date:now.toLocaleDateString('en-GB'),category:r.category||'—'};
+}
+
+function printPO(po){
+  if(typeof po==='string')po=JSON.parse(po.replace(/&quot;/g,'"'));
+  const win=window.open('','_blank');
+  win.document.write(`<!DOCTYPE html><html><head><title>Purchase Order ${po.ref}</title><style>body{font-family:Arial,sans-serif;padding:40px;color:#111;max-width:700px;margin:0 auto;}.header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #1A2B6B;padding-bottom:20px;margin-bottom:24px;}.logo-text{font-size:20px;font-weight:900;color:#1A2B6B;}.logo-sub{font-size:11px;color:#6B7280;margin-top:2px;}.po-ref{font-size:22px;font-weight:800;color:#DC1F26;}.po-date{font-size:12px;color:#6B7280;}table{width:100%;border-collapse:collapse;margin-top:20px;}th{background:#1A2B6B;color:#fff;padding:10px 14px;text-align:left;font-size:12px;}td{padding:10px 14px;border-bottom:1px solid #eee;font-size:13px;}.total{font-size:16px;font-weight:800;color:#1A2B6B;text-align:right;margin-top:20px;}.footer{margin-top:40px;font-size:11px;color:#9CA3AF;border-top:1px solid #eee;padding-top:16px;}.status{display:inline-block;background:#DCFCE7;color:#16A34A;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;}@media print{button{display:none}}</style></head><body><div class="header"><div><div class="logo-text">American Computers Albania</div><div class="logo-sub">Est. 2004 · 6 Branches Nationwide</div></div><div style="text-align:right"><div class="po-ref">${po.ref}</div><div class="po-date">Date: ${po.date}</div><div class="status">PENDING APPROVAL</div></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px"><div><div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;margin-bottom:6px">Supplier</div><div style="font-weight:700;font-size:14px">${po.supplier}</div><div style="font-size:12px;color:#6B7280">Lead time: ${po.lead_time} days</div></div><div><div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;margin-bottom:6px">Ship To</div><div style="font-weight:700;font-size:14px">American Computers Albania</div><div style="font-size:12px;color:#6B7280">All 6 branches</div></div></div><table><thead><tr><th>SKU</th><th>Product</th><th>Category</th><th>Quantity</th><th>Est. Value</th></tr></thead><tbody><tr><td>${po.sku}</td><td>${po.product}</td><td>${po.category}</td><td style="font-weight:700">${po.quantity} units</td><td style="font-weight:700;color:#1A2B6B">€${po.value}</td></tr></tbody></table><div class="total">Total Estimated Value: €${po.value}</div><div style="margin-top:32px;display:grid;grid-template-columns:1fr 1fr;gap:32px"><div><div style="font-size:11px;color:#9CA3AF;margin-bottom:30px">Requested By</div><div style="border-top:1px solid #111;padding-top:6px;font-size:12px">Signature &amp; Date</div></div><div><div style="font-size:11px;color:#9CA3AF;margin-bottom:30px">Approved By</div><div style="border-top:1px solid #111;padding-top:6px;font-size:12px">Signature &amp; Date</div></div></div><div class="footer">Generated by AC Supply Chain AI · ${new Date().toLocaleString('en-GB')} · Auto-generated, requires manual approval before submission to supplier.</div><div style="margin-top:20px"><button onclick="window.print()" style="background:#1A2B6B;color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">Print / Save as PDF</button></div></body></html>`);
+  win.document.close();
+}
+
+function agentTab(tab){
+  agentTabActive=tab;
+  ['all','reorder','reprice','promote','gaps','prices'].forEach(t=>{
+    const btn=document.getElementById('tab-'+t);
+    if(btn){btn.style.background=t===tab?'var(--navy)':'';btn.style.color=t===tab?'#fff':'';btn.style.borderColor=t===tab?'var(--navy)':'';}
+  });
+  const isSpecial=['gaps','prices'].includes(tab);
+  document.getElementById('agent-recs').style.display=isSpecial?'none':'block';
+  document.getElementById('agent-gaps').style.display=tab==='gaps'?'block':'none';
+  document.getElementById('agent-prices').style.display=tab==='prices'?'block':'none';
+  if(!isSpecial)renderAgentRecs(tab);
+}
+
+async function sendChat(){
+  const inp=document.getElementById('chat-inp');
+  const q=inp.value.trim();
+  if(!q)return;
+  inp.value='';
+  const histEl=document.getElementById('chat-history');
+  chatHistory.push({role:'user',text:q});
+  histEl.innerHTML+=`<div style="display:flex;justify-content:flex-end;margin-bottom:10px"><div style="background:var(--navy);color:#fff;padding:9px 14px;border-radius:12px 12px 2px 12px;font-size:12.5px;max-width:75%;line-height:1.5">${q}</div></div>`;
+  histEl.innerHTML+=`<div id="chat-typing" style="display:flex;align-items:center;gap:6px;margin-bottom:10px;color:var(--hint);font-size:12px"><span class="spinner" style="width:12px;height:12px;border-width:2px"></span>Agent thinking...</div>`;
+  histEl.scrollTop=histEl.scrollHeight;
+  try{
+    const res=await api('/ml/agent/chat',{method:'POST',body:JSON.stringify({question:q})});
+    document.getElementById('chat-typing')?.remove();
+    chatHistory.push({role:'agent',text:res.answer});
+    histEl.innerHTML+=`<div style="display:flex;gap:8px;margin-bottom:12px;align-items:flex-start"><div style="width:26px;height:26px;background:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;flex-shrink:0;font-weight:700">AI</div><div style="background:var(--surf2);border:1px solid var(--border);padding:10px 14px;border-radius:2px 12px 12px 12px;font-size:12.5px;max-width:80%;line-height:1.6;color:var(--text)">${res.answer}</div></div>`;
+    histEl.scrollTop=histEl.scrollHeight;
+  }catch(e){document.getElementById('chat-typing')?.remove();histEl.innerHTML+=`<div style="color:var(--red);font-size:12px;margin-bottom:8px">Error: ${e.message}</div>`;}
+}
+
+async function runETL(){
+  const btn=document.getElementById('etl-btn');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Running...';
+  document.getElementById('etl-status').innerHTML='<span class="dot d-n"></span>Running';
+  document.getElementById('etl-status').className='badge b-navy';
+  ['etl-s1','etl-s2','etl-s3','etl-s4','etl-s5'].forEach(id=>{document.getElementById(id).className='badge b-amber';document.getElementById(id).textContent='Running';});
+  try{
+    const res=await api('/ml/etl/run',{method:'POST'});
+    document.getElementById('etl-recs').textContent=res.records_processed.toLocaleString();
+    document.getElementById('etl-null').textContent=res.null_rate+'%';
+    document.getElementById('etl-dur').textContent=res.duration_seconds+'s';
+    ['etl-s1','etl-s2','etl-s3','etl-s4','etl-s5'].forEach(id=>{document.getElementById(id).className='badge b-green';document.getElementById(id).textContent='Done';});
+    document.getElementById('etl-status').innerHTML='<span class="dot d-g"></span>Complete';
+    document.getElementById('etl-status').className='badge b-green';
+    document.getElementById('etl-log').innerHTML=(res.log||[]).map(line=>{const lvl=line.includes('[OK]')?'ok':line.includes('[ERR]')?'er':'in';const ts=line.match(/\[(\d{2}:\d{2}:\d{2})\]/)?.[1]||'';const msg=line.replace(/\[.*?\]/g,'').trim();return`<div class="log-line"><span class="ts">${ts}</span><span class="${lvl}">[${lvl.toUpperCase()}]</span> ${msg}</div>`;}).join('');
+  }catch(e){document.getElementById('etl-status').innerHTML='<span class="dot d-r"></span>Failed';document.getElementById('etl-status').className='badge b-red';}
+  finally{btn.disabled=false;btn.textContent='Trigger Pipeline';}
+}
+
+async function loadUsers(){
+  try{
+    const users=await api('/auth/users');
+    document.getElementById('users-count').textContent=users.length+' users';
+    document.getElementById('users-body').innerHTML=users.map(u=>`<tr><td style="font-family:var(--mono);color:var(--muted)">${u.id}</td><td style="font-weight:600;color:var(--navy)">${u.username}</td><td>${u.full_name||'—'}</td><td style="color:var(--muted)">${u.email}</td><td><span class="badge ${u.role==='admin'?'b-navy':'b-green'}">${u.role}</span></td><td><span class="badge ${u.is_active?'b-green':'b-red'}">${u.is_active?'Active':'Inactive'}</span></td><td>${u.is_active?`<button class="btn" style="font-size:10px;padding:4px 8px;color:var(--red);border-color:var(--red)" onclick="deactivateUser(${u.id})">Deactivate</button>`:'<span style="color:var(--hint);font-size:11px">Inactive</span>'}</td></tr>`).join('');
+  }catch(e){console.error(e);}
+}
+async function deactivateUser(id){if(!confirm('Deactivate this user?'))return;try{await api(`/auth/users/${id}/deactivate`,{method:'PATCH'});loadUsers();}catch(e){alert('Error: '+e.message);}}
+
+let floatChatOpen=false;
+let floatHistory=[];
+let floatProactiveShown=false;
+let floatAlertData=null;
+
+async function initFloatChat(){
+  try{
+    const res=await api('/ml/agent/proactive-alerts');
+    floatAlertData=res;
+    if(res.total_alerts>0){
+      const badge=document.getElementById('float-chat-unread');
+      if(badge){badge.textContent=res.total_alerts>9?'9+':String(res.total_alerts);badge.style.display='flex';}
+    }
+  }catch(e){}
+}
+
+function toggleFloatChat(){
+  floatChatOpen=!floatChatOpen;
+  const panel=document.getElementById('float-chat-panel');
+  const btn=document.getElementById('float-chat-btn');
+  const badge=document.getElementById('float-chat-unread');
+  panel.style.display=floatChatOpen?'flex':'none';
+  btn.style.opacity=floatChatOpen?'0.75':'1';
+  btn.style.transform=floatChatOpen?'scale(0.92)':'scale(1)';
+  if(badge)badge.style.display='none';
+  if(floatChatOpen){
+    document.getElementById('float-chat-inp').focus();
+    if(!floatProactiveShown&&floatAlertData&&floatAlertData.total_alerts>0){
+      floatProactiveShown=true;
+      setTimeout(()=>{
+        const a=floatAlertData;
+        const msg=`I detected ${a.critical_stock_count} critical stockout${a.critical_stock_count!==1?'s':''}, ${a.overpriced_count} overpriced product${a.overpriced_count!==1?'s':''}, and ${a.delayed_count} delayed order${a.delayed_count!==1?'s':''} right now. Ask me for details on any of these.`;
+        appendFloatMsg('ai',msg,'');
+      },400);
+    }
+  }
+}
+
+function appendFloatMsg(role,text,actionHtml){
+  const histEl=document.getElementById('float-chat-history');
+  if(role==='user'){
+    histEl.innerHTML+=`<div style="display:flex;justify-content:flex-end;margin-bottom:10px"><div style="background:var(--navy);color:#fff;padding:8px 12px;border-radius:12px 12px 2px 12px;font-size:12px;max-width:80%;line-height:1.5">${text}</div></div>`;
+  }else{
+    histEl.innerHTML+=`<div style="display:flex;gap:7px;margin-bottom:12px;align-items:flex-start"><div style="width:24px;height:24px;background:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;flex-shrink:0;font-weight:700">AI</div><div><div style="background:var(--surf);border:1px solid var(--border);padding:9px 12px;border-radius:2px 12px 12px 12px;font-size:12px;line-height:1.5;color:var(--text);max-width:100%">${text}</div>${actionHtml||''}</div></div>`;
+  }
+  histEl.scrollTop=histEl.scrollHeight;
+}
+
+async function sendFloatChat(){
+  const inp=document.getElementById('float-chat-inp');
+  const q=inp.value.trim();
+  if(!q)return;
+  inp.value='';
+  floatHistory.push({role:'user',text:q});
+  appendFloatMsg('user',q,'');
+  const histEl=document.getElementById('float-chat-history');
+  histEl.innerHTML+=`<div id="float-typing" style="display:flex;align-items:center;gap:6px;margin-bottom:10px;color:var(--hint);font-size:11px"><span class="spinner" style="width:10px;height:10px;border-width:2px;margin-right:4px"></span>Thinking...</div>`;
+  histEl.scrollTop=histEl.scrollHeight;
+  try{
+    let fullQ=q;
+    if(floatHistory.length>=2){
+      const prev=floatHistory[floatHistory.length-2];
+      if(prev&&prev.text&&prev.text.length<50){fullQ=q+` (context: user previously asked "${prev.text}")`;}
+    }
+    const res=await api('/ml/agent/chat',{method:'POST',body:JSON.stringify({question:fullQ})});
+    document.getElementById('float-typing')?.remove();
+    floatHistory.push({role:'agent',text:res.answer});
+    const ans=res.answer.toLowerCase();
+    let actionHtml='';
+    if(ans.includes('restock')||ans.includes('reorder')||ans.includes('out of stock')||ans.includes('urgently')){
+      actionHtml=`<button class="btn btn-p" style="font-size:10px;padding:3px 10px;margin-top:6px" onclick="floatGoToAgent()">View in AI Agent</button>`;
+    }else if(ans.includes('price')&&(ans.includes('expensive')||ans.includes('overpriced'))){
+      actionHtml=`<button class="btn" style="font-size:10px;padding:3px 10px;margin-top:6px;color:var(--amber);border-color:var(--amber)" onclick="floatGoToTab('prices')">View Price Intel</button>`;
+    }
+    appendFloatMsg('ai',res.answer,actionHtml);
+  }catch(e){
+    document.getElementById('float-typing')?.remove();
+    appendFloatMsg('ai',`Error connecting to agent: ${e.message}`,'');
+  }
+}
+
+function floatGoToAgent(){
+  toggleFloatChat();
+  const agentBtn=document.querySelector('.nav-btn[onclick*="\'agent\'"]');
+  if(agentBtn)agentBtn.click();
+}
+
+function floatGoToTab(tab){
+  toggleFloatChat();
+  const agentBtn=document.querySelector('.nav-btn[onclick*="\'agent\'"]');
+  if(agentBtn){agentBtn.click();setTimeout(()=>agentTab(tab),800);}
+}
+
+function floatQuick(q){
+  document.getElementById('float-chat-inp').value=q;
+  sendFloatChat();
+}
+
+function startVoice(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){alert('Voice input not supported in this browser. Please use Chrome.');return;}
+  const micBtn=document.getElementById('float-mic-btn');
+  const rec=new SR();
+  rec.lang='en-US';rec.continuous=false;rec.interimResults=false;
+  if(micBtn){micBtn.style.color='var(--red)';micBtn.textContent='🔴';}
+  rec.onresult=(e)=>{
+    document.getElementById('float-chat-inp').value=e.results[0][0].transcript;
+    if(micBtn){micBtn.style.color='';micBtn.textContent='🎤';}
+  };
+  rec.onerror=()=>{if(micBtn){micBtn.style.color='';micBtn.textContent='🎤';}};
+  rec.onend=()=>{if(micBtn){micBtn.style.color='';micBtn.textContent='🎤';}};
+  rec.start();
+}
+
+checkAPI();setInterval(checkAPI,30000);loadDashboard();
+document.getElementById('user-info').textContent=currentUser.full_name||currentUser.username||'User';
+const roleEl=document.getElementById('user-role');if(roleEl){roleEl.textContent=currentUser.role||'viewer';}
+if(currentUser.role==='admin'){document.getElementById('system-nav-group').style.display='block';}
+setTimeout(initFloatChat,1500);
+</script>
+</body>
+</html>

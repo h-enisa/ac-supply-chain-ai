@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>American Computers Albania — Product Availability</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:     #1A2B6B;
+      --navy-dk:  #101C4A;
+      --navy-lt:  #EEF1FB;
+      --red:      #DC1F26;
+      --red-dk:   #B91219;
+      --red-lt:   #FDECED;
+      --green:    #16A34A;
+      --green-lt: #DCFCE7;
+      --amber:    #D97706;
+      --amber-lt: #FEF3C7;
+      --bg:       #F2F3F8;
+      --surf:     #FFFFFF;
+      --border:   rgba(26,43,107,0.08);
+      --border2:  rgba(26,43,107,0.14);
+      --text:     #0D1530;
+      --muted:    #6B7280;
+      --hint:     #9CA3AF;
+      --mono:     'DM Mono', monospace;
+      --display:  'Syne', sans-serif;
+      --body:     'DM Sans', sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--body); background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(26,43,107,0.97);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 0 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 12px; }
+    .nav-brand img { width: 34px; height: 34px; object-fit: contain; }
+    .nav-brand-text { font-family: var(--display); font-size: 15px; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
+    .nav-brand-sub { font-size: 10px; color: rgba(255,255,255,0.5); letter-spacing: .04em; }
+    .nav-right { display: flex; align-items: center; gap: 16px; }
+    .nav-pill { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.7); padding: 5px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); letter-spacing: .04em; }
+    .nav-live { display: flex; align-items: center; gap: 6px; font-size: 11px; color: rgba(255,255,255,0.6); }
+    .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ADE80; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.3;} }
+
+    .hero { background: var(--navy); padding: 64px 40px 0; position: relative; overflow: hidden; }
+    .hero-blob { position: absolute; border-radius: 50%; pointer-events: none; }
+    .hero-blob.b1 { width: 600px; height: 600px; background: radial-gradient(circle, rgba(220,31,38,0.14), transparent 65%); top: -200px; right: -150px; }
+    .hero-blob.b2 { width: 350px; height: 350px; background: radial-gradient(circle, rgba(255,255,255,0.04), transparent 65%); bottom: 20px; left: -80px; }
+    .hero-inner { max-width: 1160px; margin: 0 auto; position: relative; z-index: 1; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; color: var(--red); text-transform: uppercase; letter-spacing: .12em; background: rgba(220,31,38,0.12); padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(220,31,38,0.2); margin-bottom: 22px; }
+    .hero h1 { font-family: var(--display); font-size: 58px; font-weight: 800; color: #fff; letter-spacing: -2px; line-height: 1.03; margin-bottom: 16px; }
+    .hero h1 em { color: var(--red); font-style: normal; }
+    .hero-desc { font-size: 16px; color: rgba(255,255,255,0.62); max-width: 500px; line-height: 1.75; margin-bottom: 36px; }
+
+    .search-box { display: flex; gap: 10px; max-width: 580px; margin-bottom: 28px; }
+    .search-inp { flex: 1; font-family: var(--body); font-size: 14px; padding: 13px 18px; border-radius: 10px; border: 1.5px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.07); color: #fff; outline: none; transition: all .2s; }
+    .search-inp::placeholder { color: rgba(255,255,255,0.3); }
+    .search-inp:focus { border-color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.11); }
+    .search-btn { font-family: var(--body); font-size: 14px; font-weight: 700; padding: 13px 24px; border-radius: 10px; border: none; background: var(--red); color: #fff; cursor: pointer; transition: all .15s; }
+    .search-btn:hover { background: var(--red-dk); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(220,31,38,0.4); }
+
+    .cat-tabs { display: flex; gap: 2px; flex-wrap: wrap; background: rgba(255,255,255,0.06); padding: 4px; border-radius: 12px; width: fit-content; border: 1px solid rgba(255,255,255,0.07); }
+    .cat-tab { font-family: var(--body); font-size: 12px; font-weight: 600; padding: 7px 16px; border-radius: 9px; border: none; background: none; color: rgba(255,255,255,0.5); cursor: pointer; transition: all .15s; }
+    .cat-tab:hover { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.07); }
+    .cat-tab.on { background: #fff; color: var(--navy); font-weight: 700; }
+
+    .hero-strip { display: flex; gap: 0; margin-top: 44px; border-top: 1px solid rgba(255,255,255,0.07); padding: 22px 0; }
+    .hstat { flex: 1; padding: 0 32px; border-right: 1px solid rgba(255,255,255,0.07); }
+    .hstat:first-child { padding-left: 0; }
+    .hstat:last-child { border: none; }
+    .hstat-val { font-family: var(--mono); font-size: 30px; font-weight: 700; color: #fff; letter-spacing: -1px; }
+    .hstat-val.g { color: #4ADE80; }
+    .hstat-val.a { color: #FCD34D; }
+    .hstat-val.r { color: #F87171; }
+    .hstat-val.dim { font-size: 14px; color: rgba(255,255,255,0.35); font-family: var(--body); }
+    .hstat-lbl { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.38); text-transform: uppercase; letter-spacing: .1em; margin-top: 3px; }
+
+    .main { max-width: 1160px; margin: 0 auto; padding: 36px 40px; }
+    .toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+    .toolbar-lbl { font-size: 13px; font-weight: 600; color: var(--muted); }
+    .sort-sel { font-family: var(--body); font-size: 12px; font-weight: 600; padding: 7px 12px; border-radius: 8px; border: 1.5px solid var(--border2); background: var(--surf); color: var(--text); cursor: pointer; outline: none; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px,1fr)); gap: 14px; }
+    .pcard { background: var(--surf); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; transition: box-shadow .2s, transform .2s, border-color .2s; }
+    .pcard:hover { box-shadow: 0 8px 32px rgba(26,43,107,0.11); transform: translateY(-3px); border-color: var(--border2); }
+    .pcard-head { padding: 16px 18px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .cat-badge { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .12em; padding: 4px 9px; border-radius: 6px; background: var(--navy-lt); color: var(--navy); }
+    .av-pill { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; padding: 4px 10px; border-radius: 20px; flex-shrink: 0; }
+    .av-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .av-in  { background: var(--green-lt); color: var(--green); }
+    .av-low { background: var(--amber-lt); color: var(--amber); }
+    .av-out { background: var(--red-lt);   color: var(--red); }
+    .d-in  { background: var(--green); }
+    .d-low { background: var(--amber); }
+    .d-out { background: var(--red); }
+    .pcard-body { padding: 16px 18px; flex: 1; }
+    .pcard-name { font-family: var(--display); font-size: 16px; font-weight: 700; color: var(--text); line-height: 1.3; margin-bottom: 3px; letter-spacing: -0.3px; }
+    .pcard-sku  { font-family: var(--mono); font-size: 10px; color: var(--hint); margin-bottom: 14px; }
+    .pcard-price { font-family: var(--mono); font-size: 28px; font-weight: 700; color: var(--navy); letter-spacing: -1px; margin-bottom: 3px; }
+    .pcard-vat  { font-size: 10.5px; color: var(--hint); margin-bottom: 14px; }
+    .pcard-stock { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+    .pcard-foot { padding: 12px 18px; background: var(--bg); border-top: 1px solid var(--border); }
+    .branch-title { font-size: 9.5px; font-weight: 800; color: var(--hint); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 8px; }
+    .branch-rows { display: flex; flex-direction: column; gap: 5px; }
+    .brow { display: flex; align-items: center; justify-content: space-between; font-size: 11.5px; }
+    .brow-name { font-weight: 500; color: var(--text); }
+    .brow-right { display: flex; align-items: center; gap: 8px; }
+    .brow-qty { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--navy); }
+    .bst { font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 5px; text-transform: uppercase; letter-spacing: .04em; }
+    .bst-in  { background: var(--green-lt); color: var(--green); }
+    .bst-low { background: var(--amber-lt); color: var(--amber); }
+    .bst-out { background: var(--red-lt);   color: var(--red); }
+
+    .empty { text-align: center; padding: 100px 40px; }
+    .empty-icon { font-size: 52px; margin-bottom: 18px; }
+    .empty h3 { font-family: var(--display); font-size: 22px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+    .empty p { font-size: 14px; color: var(--muted); }
+    .loader { display: flex; flex-direction: column; align-items: center; padding: 100px 40px; }
+    .spinner { width: 38px; height: 38px; border: 3px solid var(--border2); border-top-color: var(--navy); border-radius: 50%; animation: spin .8s linear infinite; margin-bottom: 18px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loader p { font-size: 13px; color: var(--muted); }
+
+    footer { background: var(--navy-dk); padding: 40px; display: flex; align-items: flex-start; justify-content: space-between; gap: 40px; flex-wrap: wrap; margin-top: 80px; }
+    .foot-brand { font-family: var(--display); font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 5px; }
+    .foot-sub { font-size: 12px; color: rgba(255,255,255,0.38); }
+    .foot-branches { display: flex; flex-wrap: wrap; gap: 8px; }
+    .foot-branch { font-size: 11px; background: rgba(255,255,255,0.06); padding: 5px 12px; border-radius: 6px; color: rgba(255,255,255,0.5); }
+    .foot-copy { font-size: 11px; color: rgba(255,255,255,0.28); align-self: flex-end; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <img src="logo.png" alt="AC">
+    <div>
+      <div class="nav-brand-text">American Computers</div>
+      <div class="nav-brand-sub">Albania · Est. 2004</div>
+    </div>
+  </div>
+  <div class="nav-right">
+    <div class="nav-live"><span class="live-dot"></span>Live Stock</div>
+    <div class="nav-pill">6 Branches Nationwide</div>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-blob b1"></div>
+  <div class="hero-blob b2"></div>
+  <div class="hero-inner">
+    <div class="eyebrow">🔍 Real-Time Availability</div>
+    <h1>Find Your<br><em>Perfect</em> Device</h1>
+    <div class="hero-desc">Check live stock and prices across all 6 Albanian branches — before you visit the store.</div>
+    <div class="search-box">
+      <input class="search-inp" id="search-inp" type="text" placeholder="Search by name, category or SKU..." oninput="onSearch()">
+      <button class="search-btn" onclick="onSearch()">Search</button>
+    </div>
+    <div class="cat-tabs">
+      <button class="cat-tab on" onclick="setCategory('',this)">All</button>
+      <button class="cat-tab" onclick="setCategory('Laptops',this)">Laptops</button>
+      <button class="cat-tab" onclick="setCategory('Desktops',this)">Desktops</button>
+      <button class="cat-tab" onclick="setCategory('Monitors',this)">Monitors</button>
+      <button class="cat-tab" onclick="setCategory('Smartphones',this)">Smartphones</button>
+      <button class="cat-tab" onclick="setCategory('Tablets',this)">Tablets</button>
+      <button class="cat-tab" onclick="setCategory('Gaming',this)">Gaming</button>
+      <button class="cat-tab" onclick="setCategory('Accessories',this)">Accessories</button>
+      <button class="cat-tab" onclick="setCategory('Storage',this)">Storage</button>
+    </div>
+    <div class="hero-strip">
+      <div class="hstat"><div class="hstat-val" id="st-total">—</div><div class="hstat-lbl">Products</div></div>
+      <div class="hstat"><div class="hstat-val g" id="st-in">—</div><div class="hstat-lbl">In Stock</div></div>
+      <div class="hstat"><div class="hstat-val a" id="st-low">—</div><div class="hstat-lbl">Low Stock</div></div>
+      <div class="hstat"><div class="hstat-val r" id="st-out">—</div><div class="hstat-lbl">Out of Stock</div></div>
+      <div class="hstat"><div class="hstat-val dim" id="st-updated">—</div><div class="hstat-lbl">Last Updated</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="toolbar">
+    <div class="toolbar-lbl" id="results-label"></div>
+    <select class="sort-sel" id="sort-sel" onchange="applyFilters()">
+      <option value="name">Name A–Z</option>
+      <option value="price-asc">Price: Low to High</option>
+      <option value="price-desc">Price: High to Low</option>
+      <option value="stock">Most Stock</option>
+    </select>
+  </div>
+  <div id="grid-wrap">
+    <div class="loader"><div class="spinner"></div><p>Loading products...</p></div>
+  </div>
+</div>
+
+<footer>
+  <div>
+    <div class="foot-brand">American Computers Albania</div>
+    <div class="foot-sub">Est. 2004 · Albania's trusted electronics retailer</div>
+  </div>
+  <div class="foot-copy">© 2026 American Computers Albania</div>
+</footer>
+
+<script>
+const API='http://localhost:8000/api/v1';
+let allProducts=[];
+let selectedCategory='';
+let searchTimer=null;
+
+const BRANCH_NAMES={1:'Tirana',2:'Shkodër',3:'Elbasan',4:'Vlorë',5:'Berat',6:'Pogradec'};
+
+async function loadProducts(){
+  try{
+    let url=`${API}/public/products`;
+    if(selectedCategory) url+=`?category=${encodeURIComponent(selectedCategory)}`;
+    const res=await fetch(url);
+    if(!res.ok) throw new Error('API error');
+    allProducts=await res.json();
+    applyFilters();
+    document.getElementById('st-updated').textContent=new Date().toLocaleTimeString('en-GB');
+  }catch(e){
+    document.getElementById('grid-wrap').innerHTML=`<div class="empty"><div class="empty-icon">⚠️</div><h3>Cannot connect to server</h3><p>Make sure uvicorn is running on localhost:8000</p></div>`;
+  }
+}
+
+function applyFilters(){
+  const q=document.getElementById('search-inp').value.toLowerCase().trim();
+  let f=allProducts.filter(p=>!q||p.name.toLowerCase().includes(q)||(p.sku||'').toLowerCase().includes(q)||(p.category||'').toLowerCase().includes(q));
+  const s=document.getElementById('sort-sel').value;
+  if(s==='price-asc')  f.sort((a,b)=>a.price-b.price);
+  if(s==='price-desc') f.sort((a,b)=>b.price-a.price);
+  if(s==='stock')      f.sort((a,b)=>b.total_stock-a.total_stock);
+  if(s==='name')       f.sort((a,b)=>a.name.localeCompare(b.name));
+  updateStats(f);
+  renderGrid(f);
+}
+
+function updateStats(f){
+  document.getElementById('st-total').textContent=f.length;
+  document.getElementById('st-in').textContent=f.filter(p=>p.availability==='in_stock').length;
+  document.getElementById('st-low').textContent=f.filter(p=>p.availability==='low_stock').length;
+  document.getElementById('st-out').textContent=f.filter(p=>p.availability==='out_of_stock').length;
+}
+
+function renderGrid(products){
+  const q=document.getElementById('search-inp').value.trim();
+  const cat=selectedCategory||'All categories';
+  document.getElementById('results-label').textContent=`${products.length} product${products.length!==1?'s':''} — ${cat}${q?` matching "${q}"`:''}`;
+  if(products.length===0){
+    document.getElementById('grid-wrap').innerHTML=`<div class="empty"><div class="empty-icon">🔍</div><h3>No products found</h3><p>Try a different search term or select another category</p></div>`;
+    return;
+  }
+  document.getElementById('grid-wrap').innerHTML=`<div class="grid">${products.map(card).join('')}</div>`;
+}
+
+function card(p){
+  const av=p.availability;
+  const ac=av==='in_stock'?'av-in':av==='low_stock'?'av-low':'av-out';
+  const dc=av==='in_stock'?'d-in':av==='low_stock'?'d-low':'d-out';
+  const al=av==='in_stock'?'In Stock':av==='low_stock'?'Low Stock':'Out of Stock';
+  const pr=p.price?`€${Number(p.price).toFixed(2)}`:'—';
+  const branches=(p.branches||[]).map(b=>{
+    const n=BRANCH_NAMES[b.branch_id]||`Branch ${b.branch_id}`;
+    const bc=b.status==='in_stock'?'bst-in':b.status==='low_stock'?'bst-low':'bst-out';
+    const bl=b.status==='in_stock'?'In Stock':b.status==='low_stock'?'Low':'Out';
+    return`<div class="brow"><span class="brow-name">${n}</span><div class="brow-right"><span class="brow-qty">${b.quantity} units</span><span class="bst ${bc}">${bl}</span></div></div>`;
+  }).join('');
+  const stockInfo=av==='out_of_stock'?`<span style="color:var(--red)">Currently unavailable</span>`:`${p.total_stock} units · ${(p.branches||[]).length} branches`;
+  return`<div class="pcard">
+    <div class="pcard-head"><span class="cat-badge">${p.category||'—'}</span><span class="av-pill ${ac}"><span class="av-dot ${dc}"></span>${al}</span></div>
+    <div class="pcard-body">
+      <div class="pcard-name">${p.name}</div>
+      <div class="pcard-sku">SKU: ${p.sku}</div>
+      <div class="pcard-price">${pr}</div>
+      <div class="pcard-vat">Price includes VAT</div>
+      <div class="pcard-stock">📦 ${stockInfo}</div>
+    </div>
+    <div class="pcard-foot">
+      <div class="branch-title">Availability by Branch</div>
+      <div class="branch-rows">${branches||'<div style="font-size:12px;color:var(--hint)">No branch data</div>'}</div>
+    </div>
+  </div>`;
+}
+
+function onSearch(){clearTimeout(searchTimer);searchTimer=setTimeout(()=>{applyFilters();logSearch();},200);}
+
+async function logSearch(){
+  const q=document.getElementById('search-inp').value.trim();
+  if(q.length<2) return;
+  const filtered=allProducts.filter(p=>p.name.toLowerCase().includes(q.toLowerCase())||(p.sku||'').toLowerCase().includes(q.toLowerCase()));
+  const hadStockout=filtered.some(p=>p.availability==='out_of_stock');
+  const hadLowstock=filtered.some(p=>p.availability==='low_stock');
+  try{
+    await fetch(`${API}/public/log-search`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({query:q,category:selectedCategory||null,results_count:filtered.length,had_stockout:hadStockout,had_lowstock:hadLowstock})
+    });
+  }catch(e){}
+}
+function setCategory(cat,btn){selectedCategory=cat;document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('on'));btn.classList.add('on');document.getElementById('search-inp').value='';loadProducts();}
+
+loadProducts();
+setInterval(loadProducts,60000);
+</script>
+</body>
+</html>
